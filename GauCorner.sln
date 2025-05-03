@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GauCorner.Business", "GauCorner.Business\GauCorner.Business.csproj", "{F43D9298-1887-42EC-AAD5-C0B6CF25D7A3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GauCorner.Data", "GauCorner.Data\GauCorner.Data.csproj", "{AD908A7A-560A-4F1F-AAE6-181E96DEA831}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GauCorner.API", "GauCorner.API\GauCorner.API.csproj", "{81FC726C-02F8-4201-939D-41C3B889EED8}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F43D9298-1887-42EC-AAD5-C0B6CF25D7A3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F43D9298-1887-42EC-AAD5-C0B6CF25D7A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F43D9298-1887-42EC-AAD5-C0B6CF25D7A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F43D9298-1887-42EC-AAD5-C0B6CF25D7A3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AD908A7A-560A-4F1F-AAE6-181E96DEA831}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AD908A7A-560A-4F1F-AAE6-181E96DEA831}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AD908A7A-560A-4F1F-AAE6-181E96DEA831}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AD908A7A-560A-4F1F-AAE6-181E96DEA831}.Release|Any CPU.Build.0 = Release|Any CPU
+		{81FC726C-02F8-4201-939D-41C3B889EED8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{81FC726C-02F8-4201-939D-41C3B889EED8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{81FC726C-02F8-4201-939D-41C3B889EED8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{81FC726C-02F8-4201-939D-41C3B889EED8}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
