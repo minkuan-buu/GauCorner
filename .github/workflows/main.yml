@@ -3,7 +3,7 @@ name: Deploy .NET App to Server
 on:
   push:
     branches:
-      - master
+      - main
 
 jobs:
   deploy:
@@ -24,7 +24,7 @@ jobs:
 
           # Cập nhật mã nguồn
           sudo git reset --hard
-          sudo git pull origin master
+          sudo git pull origin main
 
           # Xóa thư mục publish cũ
           sudo rm -rf /www/wwwroot/api.donate.buubuu.id.vn/GauCorner/GauCorner.API/publish
