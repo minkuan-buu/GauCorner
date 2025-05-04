@@ -1,12 +1,16 @@
 using GauCorner.API.Middleware;
 using GauCorner.Business.MapperProfiles;
+using GauCorner.Business.Services.DonateServices;
 using GauCorner.Business.Services.UserServices;
 using GauCorner.Data.Entities;
+using GauCorner.Data.Repositories.DonateRepositories;
 using GauCorner.Data.Repositories.StreamConfigRepositories;
 using GauCorner.Data.Repositories.StreamConfigTypeRepositories;
+using GauCorner.Data.Repositories.UIConfigRepositories;
 using GauCorner.Data.Repositories.UserRepositories;
 using GauCorner.Data.Repositories.UserTokenRepositories;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 
 DotNetEnv.Env.Load();
 var builder = WebApplication.CreateBuilder(args);
@@ -35,6 +39,65 @@ var connectionString = rawConnectionString
 builder.Services.AddDbContext<GauCornerContext>(options =>
     options.UseSqlServer(connectionString));
 
+//========================================== SWAGGER ==============================================
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Version = "v1",
+        Title = "GauCorner.API",
+        Description = "GauCorner"
+    });
+
+    // 🟢 Cấu hình Bearer Token
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        In = ParameterLocation.Header,
+        Description = "JWT Authorization header using the Bearer scheme. " +
+                      "\n\nEnter your token in the text input below. " +
+                      "\n\nExample: '12345abcde'",
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        BearerFormat = "JWT",
+        Scheme = "bearer"
+    });
+
+    // 🟢 Cấu hình Cookie Authentication
+    c.AddSecurityDefinition("cookieAuth", new OpenApiSecurityScheme
+    {
+        Type = SecuritySchemeType.ApiKey,
+        Name = "Cookie",
+        In = ParameterLocation.Header,
+        Description = "Nhập Cookie vào đây (VD: sessionId=xyz123)"
+    });
+
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new string[] {}
+        },
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "cookieAuth"
+                }
+            },
+            new string[] {}
+        }
+    });
+});
+
 //========================================== MIDDLEWARE ===========================================
 builder.Services.AddSingleton<GlobalExceptionMiddleware>();
 
@@ -46,9 +109,27 @@ builder.Services.AddScoped<IUserRepositories, UserRepositories>();
 builder.Services.AddScoped<IUserTokenRepositories, UserTokenRepositories>();
 builder.Services.AddScoped<IStreamConfigTypeRepositories, StreamConfigTypeRepositories>();
 builder.Services.AddScoped<IStreamConfigRepositories, StreamConfigRepositories>();
+builder.Services.AddScoped<IDonateRepositories, DonateRepositories>();
+builder.Services.AddScoped<IUIConfigRepositories, UIConfigRepositories>();
 
 //=========================================== SERVICE =============================================
 builder.Services.AddScoped<IUserServices, UserServices>();
+builder.Services.AddScoped<IDonateServices, DonateServices>();
+
+//=========================================== CORS ================================================
+var allowedOrigins = builder.Configuration.GetSection("AllowedOrigins").Get<string[]>();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: "AllowAllOrigin", policy =>
+    {
+        policy
+            .WithOrigins(allowedOrigins!)
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials()
+            .WithExposedHeaders("New-Access-Token");
+    });
+});
 
 var app = builder.Build();
 
@@ -58,6 +139,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+app.UseCors("AllowAllOrigin");
+
 app.UseMiddleware<GlobalExceptionMiddleware>();
 
 app.UseHttpsRedirection();

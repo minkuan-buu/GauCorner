@@ -1,6 +1,6 @@
-using GauCorne.Data.DTO.RequestModel;
-using GauCorne.Data.DTO.ResponseModel.UserResModel;
+using GauCorner.Data.DTO.RequestModel;
 using GauCorner.Data.DTO.ResponseModel.ResultModel;
+using GauCorner.Data.DTO.ResponseModel.UserResModel;
 
 namespace GauCorner.Business.Services.UserServices
 {

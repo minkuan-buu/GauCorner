@@ -31,7 +31,7 @@ public partial class GauCornerContext : DbContext
     {
         modelBuilder.Entity<Donate>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Donate__3214EC07C0328F59");
+            entity.HasKey(e => e.Id).HasName("PK__Donate__3214EC07C9229887");
 
             entity.ToTable("Donate");
 
@@ -55,12 +55,12 @@ public partial class GauCornerContext : DbContext
             entity.HasOne(d => d.User).WithMany(p => p.Donates)
                 .HasForeignKey(d => d.UserId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Donate__UserId__412EB0B6");
+                .HasConstraintName("FK__Donate__UserId__440B1D61");
         });
 
         modelBuilder.Entity<StreamConfig>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__StreamCo__3214EC07E9CF0DE8");
+            entity.HasKey(e => e.Id).HasName("PK__StreamCo__3214EC077A82F47D");
 
             entity.ToTable("StreamConfig");
 
@@ -72,29 +72,29 @@ public partial class GauCornerContext : DbContext
             entity.HasOne(d => d.StreamConfigType).WithMany(p => p.StreamConfigs)
                 .HasForeignKey(d => d.StreamConfigTypeId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__StreamCon__Strea__4222D4EF");
+                .HasConstraintName("FK__StreamCon__Strea__44FF419A");
 
             entity.HasOne(d => d.User).WithMany(p => p.StreamConfigs)
                 .HasForeignKey(d => d.UserId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__StreamCon__UserI__403A8C7D");
+                .HasConstraintName("FK__StreamCon__UserI__4316F928");
         });
 
         modelBuilder.Entity<StreamConfigType>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__StreamCo__3214EC074BB8D258");
+            entity.HasKey(e => e.Id).HasName("PK__StreamCo__3214EC07291D9300");
 
             entity.ToTable("StreamConfigType");
 
             entity.Property(e => e.Id).ValueGeneratedNever();
             entity.Property(e => e.AlternativeName)
-                .HasMaxLength(100)
+                .HasMaxLength(300)
                 .IsUnicode(false);
             entity.Property(e => e.DefaultValue)
                 .HasMaxLength(400)
                 .IsUnicode(false);
             entity.Property(e => e.Name)
-                .HasMaxLength(100)
+                .HasMaxLength(300)
                 .IsUnicode(false);
             entity.Property(e => e.Status)
                 .HasMaxLength(30)
@@ -103,7 +103,7 @@ public partial class GauCornerContext : DbContext
 
         modelBuilder.Entity<Uiconfig>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__UIConfig__3214EC078893B437");
+            entity.HasKey(e => e.Id).HasName("PK__UIConfig__3214EC07601EDBE9");
 
             entity.ToTable("UIConfig");
 
@@ -129,12 +129,12 @@ public partial class GauCornerContext : DbContext
             entity.HasOne(d => d.CreatedByNavigation).WithMany(p => p.Uiconfigs)
                 .HasForeignKey(d => d.CreatedBy)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__UIConfig__Create__3F466844");
+                .HasConstraintName("FK__UIConfig__Create__4222D4EF");
         });
 
         modelBuilder.Entity<UserAccount>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__UserAcco__3214EC076FD93D39");
+            entity.HasKey(e => e.Id).HasName("PK__UserAcco__3214EC07E1C71908");
 
             entity.ToTable("UserAccount");
 
@@ -159,7 +159,7 @@ public partial class GauCornerContext : DbContext
 
         modelBuilder.Entity<UserToken>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__UserToke__3214EC07F8827427");
+            entity.HasKey(e => e.Id).HasName("PK__UserToke__3214EC07A901E97A");
 
             entity.ToTable("UserToken");
 
@@ -176,7 +176,7 @@ public partial class GauCornerContext : DbContext
             entity.HasOne(d => d.User).WithMany(p => p.UserTokens)
                 .HasForeignKey(d => d.UserId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__UserToken__UserI__44FF419A");
+                .HasConstraintName("FK__UserToken__UserI__412EB0B6");
         });
 
         OnModelCreatingPartial(modelBuilder);

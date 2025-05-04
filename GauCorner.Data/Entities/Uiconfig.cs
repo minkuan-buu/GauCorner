@@ -21,5 +21,7 @@ public partial class Uiconfig
 
     public Guid CreatedBy { get; set; }
 
+    public bool IsUsed { get; set; }
+
     public virtual UserAccount CreatedByNavigation { get; set; } = null!;
 }

@@ -1,4 +1,4 @@
-namespace GauCorne.Data.DTO.ResponseModel.UserResModel
+namespace GauCorner.Data.DTO.ResponseModel.UserResModel
 {
     public class UserLoginResModel
     {

@@ -1,4 +1,4 @@
-using GauCorne.Data.DTO.RequestModel;
+using GauCorner.Data.DTO.RequestModel;
 using GauCorner.Business.Services.UserServices;
 using GauCorner.Data.DTO.Custom;
 using Microsoft.AspNetCore.Http;

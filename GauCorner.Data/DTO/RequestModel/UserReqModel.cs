@@ -1,4 +1,4 @@
-namespace GauCorne.Data.DTO.RequestModel
+namespace GauCorner.Data.DTO.RequestModel
 {
     public class UserRegisterModel
     {

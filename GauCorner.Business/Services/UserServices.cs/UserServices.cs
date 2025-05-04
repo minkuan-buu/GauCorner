@@ -1,9 +1,9 @@
 using AutoMapper;
-using GauCorne.Data.DTO.RequestModel;
-using GauCorne.Data.DTO.ResponseModel.UserResModel;
 using GauCorner.Business.Utilities.Authentication;
 using GauCorner.Data.DTO.Custom;
+using GauCorner.Data.DTO.RequestModel;
 using GauCorner.Data.DTO.ResponseModel.ResultModel;
+using GauCorner.Data.DTO.ResponseModel.UserResModel;
 using GauCorner.Data.Entities;
 using GauCorner.Data.Repositories.StreamConfigRepositories;
 using GauCorner.Data.Repositories.StreamConfigTypeRepositories;
