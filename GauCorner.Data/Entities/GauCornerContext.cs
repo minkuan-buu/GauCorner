@@ -36,7 +36,7 @@ public partial class GauCornerContext : DbContext
             entity.ToTable("Donate");
 
             entity.Property(e => e.Id).ValueGeneratedNever();
-            entity.Property(e => e.Amount).HasColumnType("decimal(10, 2)");
+            entity.Property(e => e.Amount).HasColumnType("decimal(18, 0)");
             entity.Property(e => e.CreatedAt).HasColumnType("datetime");
             entity.Property(e => e.Message)
                 .HasMaxLength(600)
