@@ -1,9 +1,12 @@
 using GauCorner.API.Middleware;
 using GauCorner.Business.MapperProfiles;
 using GauCorner.Business.Services.DonateServices;
+using GauCorner.Business.Services.ProductServices;
 using GauCorner.Business.Services.UserServices;
 using GauCorner.Data.Entities;
+using GauCorner.Data.Repositories.CategoryRepositories;
 using GauCorner.Data.Repositories.DonateRepositories;
+using GauCorner.Data.Repositories.ProductRepositories;
 using GauCorner.Data.Repositories.StreamConfigRepositories;
 using GauCorner.Data.Repositories.StreamConfigTypeRepositories;
 using GauCorner.Data.Repositories.UIConfigRepositories;
@@ -111,10 +114,13 @@ builder.Services.AddScoped<IStreamConfigTypeRepositories, StreamConfigTypeReposi
 builder.Services.AddScoped<IStreamConfigRepositories, StreamConfigRepositories>();
 builder.Services.AddScoped<IDonateRepositories, DonateRepositories>();
 builder.Services.AddScoped<IUIConfigRepositories, UIConfigRepositories>();
+builder.Services.AddScoped<ICategoryRepositories, CategoryRepositories>();
+builder.Services.AddScoped<IProductRepositories, ProductRepositories>();
 
 //=========================================== SERVICE =============================================
 builder.Services.AddScoped<IUserServices, UserServices>();
 builder.Services.AddScoped<IDonateServices, DonateServices>();
+builder.Services.AddScoped<IProductServices, ProductServices>();
 
 //=========================================== CORS ================================================
 var allowedOrigins = builder.Configuration.GetSection("AllowedOrigins").Get<string[]>();

@@ -25,6 +25,8 @@ public partial class UserAccount
 
     public virtual ICollection<Donate> Donates { get; set; } = new List<Donate>();
 
+    public virtual ICollection<Product> Products { get; set; } = new List<Product>();
+
     public virtual ICollection<StreamConfig> StreamConfigs { get; set; } = new List<StreamConfig>();
 
     public virtual ICollection<Uiconfig> Uiconfigs { get; set; } = new List<Uiconfig>();

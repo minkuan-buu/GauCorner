@@ -36,7 +36,7 @@ namespace GauCorner.Business.Services.UserServices
                 {
                     throw new Exception("User not found");
                 }
-                if (!Authentication.VerifyPasswordHashed(userLoginModel.Password, user.Password, user.Salt))
+                if (!Authentication.VerifyPasswordHashed(userLoginModel.Password, user.Salt, user.Password))
                 {
                     throw new Exception("Password is incorrect");
                 }
