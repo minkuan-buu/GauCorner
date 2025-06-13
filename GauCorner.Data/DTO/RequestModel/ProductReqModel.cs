@@ -1,37 +1,33 @@
 using Microsoft.AspNetCore.Http;
 
-public class ProductReqModel
+// Model phụ trợ cho deserialize JSON
+public class ProductData
 {
-    public string Name { get; set; } = null!;
-    public string Description { get; set; } = null!;
+    public string Name { get; set; }
+    public string Description { get; set; }
     public Guid CategoryId { get; set; }
-    public Guid ProductTypeId { get; set; }
-    public List<ProductVariant>? Variants { get; set; }
+
+    public List<AttributeData> Attributes { get; set; }
+    public List<VariantData> Variants { get; set; }
 }
 
-public class ProductFormReqModel
+public class AttributeData
 {
-    public string Name { get; set; } = null!;
-    public string Description { get; set; } = null!;
-    public Guid CategoryId { get; set; }
-    public Guid ProductTypeId { get; set; }
-
-    public string VariantsJson { get; set; } = null!;
+    public string Name { get; set; }
+    public bool IsParent { get; set; }
+    public Guid? ParentAttributeId { get; set; }
+    public List<AttributeValueData> Values { get; set; }
 }
 
-public class ProductVariant
+public class AttributeValueData
 {
-    public string VariantName { get; set; } = null!;
-    public string? Color { get; set; }
-    public string? Style { get; set; }
-    public List<IFormFile> Image { get; set; } = null!;
-    public List<ProductSize> Sizes { get; set; } = null!;
+    public string Value { get; set; }
+    public int? ImageIndex { get; set; } // Tham chiếu ảnh trong AttributeImages
 }
 
-public class ProductSize
+public class VariantData
 {
-    public string? Size { get; set; }
+    public string SKU { get; set; }
     public decimal Price { get; set; }
-    public string SKU { get; set; } = null!;
     public int StockQuantity { get; set; }
 }

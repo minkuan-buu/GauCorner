@@ -13,11 +13,7 @@ public partial class Product
 
     public Guid CategoryId { get; set; }
 
-    public Guid ProductTypeId { get; set; }
-
-    public bool? Status { get; set; }
-
-    public DateTime? CreatedAt { get; set; }
+    public bool Status { get; set; }
 
     public Guid CreatedBy { get; set; }
 
@@ -25,7 +21,9 @@ public partial class Product
 
     public virtual UserAccount CreatedByNavigation { get; set; } = null!;
 
-    public virtual ProductType ProductType { get; set; } = null!;
+    public virtual ICollection<ProductAttachment> ProductAttachments { get; set; } = new List<ProductAttachment>();
+
+    public virtual ICollection<ProductAttribute> ProductAttributes { get; set; } = new List<ProductAttribute>();
 
     public virtual ICollection<ProductVariant> ProductVariants { get; set; } = new List<ProductVariant>();
 }

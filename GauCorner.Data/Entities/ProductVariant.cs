@@ -9,17 +9,13 @@ public partial class ProductVariant
 
     public Guid ProductId { get; set; }
 
-    public string? VariantName { get; set; }
+    public string Sku { get; set; } = null!;
 
-    public string? Color { get; set; }
+    public decimal Price { get; set; }
 
-    public string? Style { get; set; }
-
-    public bool? Status { get; set; }
+    public int StockQuantity { get; set; }
 
     public virtual Product Product { get; set; } = null!;
 
-    public virtual ICollection<ProductSize> ProductSizes { get; set; } = new List<ProductSize>();
-
-    public virtual ICollection<ProductVariantAttachment> ProductVariantAttachments { get; set; } = new List<ProductVariantAttachment>();
+    public virtual ICollection<AttributeValue> Values { get; set; } = new List<AttributeValue>();
 }
