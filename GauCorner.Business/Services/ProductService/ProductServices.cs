@@ -1,5 +1,6 @@
 using AutoMapper;
 using GauCorner.Business.Utilities.Authentication;
+using GauCorner.Business.Utilities.Converter;
 using GauCorner.Data.DTO.RequestModel;
 using GauCorner.Data.DTO.ResponseModel;
 using GauCorner.Data.DTO.ResponseModel.ResultModel;
@@ -40,8 +41,8 @@ namespace GauCorner.Business.Services.ProductServices
             var product = new Product
             {
                 Id = productId,
-                Name = productModel.Name,
-                Description = productModel.Description,
+                Name = TextConvert.ConvertToUnicodeEscape(productModel.Name),
+                Description = TextConvert.ConvertToUnicodeEscape(productModel.Description),
                 CategoryId = productModel.CategoryId,
                 CreatedBy = userId,
                 Status = true
@@ -60,7 +61,7 @@ namespace GauCorner.Business.Services.ProductServices
                 {
                     Id = attrId,
                     ProductId = productId,
-                    Name = attr.Name,
+                    Name = TextConvert.ConvertToUnicodeEscape(attr.Name),
                     IsParent = attr.isParent,
                 });
 
@@ -76,7 +77,7 @@ namespace GauCorner.Business.Services.ProductServices
                     {
                         Id = Guid.NewGuid(),
                         AttributeId = attrId,
-                        Value = option.Value,
+                        Value = TextConvert.ConvertToUnicodeEscape(option.Value),
                         Image = option.Image
                     });
                 }
