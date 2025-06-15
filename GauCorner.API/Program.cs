@@ -18,6 +18,7 @@ using GauCorner.Data.Repositories.UserRepositories;
 using GauCorner.Data.Repositories.UserTokenRepositories;
 using GauCorner.Data.Repositories.VariantAttributeValueRepo;
 using GauCorner.Services.CategoryServices;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
@@ -107,6 +108,10 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
+//======================================= AUTHENTICATION ==========================================
+builder.Services.AddAuthentication("GauCornerAuthentication")
+    .AddScheme<AuthenticationSchemeOptions, AuthorizeMiddleware>("GauCornerAuthentication", null);
+
 //========================================== MIDDLEWARE ===========================================
 builder.Services.AddSingleton<GlobalExceptionMiddleware>();
 
@@ -161,7 +166,11 @@ app.UseCors("AllowAllOrigin");
 
 app.UseMiddleware<GlobalExceptionMiddleware>();
 
+app.UseAuthentication();
+
 app.UseHttpsRedirection();
+
+app.UseAuthorization();
 
 app.MapControllers();
 

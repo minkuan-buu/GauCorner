@@ -100,5 +100,10 @@ namespace GauCorner.Business.Services.UserServices
                 throw new CustomException($"Register failed: {ex.Message}");
             }
         }
+
+        public async Task<UserAccount> GetUserById(Guid id)
+        {
+            return await _userRepositories.GetSingle(x => x.Id == id);
+        }
     }
 }

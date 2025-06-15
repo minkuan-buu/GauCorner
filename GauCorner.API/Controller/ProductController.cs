@@ -1,5 +1,6 @@
 using GauCorner.Business.Services.ProductServices;
 using GauCorner.Data.DTO.RequestModel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.SwaggerGen;
@@ -18,6 +19,7 @@ namespace GauCorner.API.Controller
         }
 
         [HttpPost]
+        [Authorize(AuthenticationSchemes = "GauCornerAuthentication")]
         public async Task<IActionResult> CreateProduct([FromForm] ProductFormWrapper wrapper)
         {
             var token = Request.Headers["Authorization"].ToString().Split(" ")[1];
