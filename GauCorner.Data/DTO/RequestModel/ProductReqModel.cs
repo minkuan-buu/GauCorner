@@ -1,33 +1,29 @@
-using Microsoft.AspNetCore.Http;
-
-// Model phụ trợ cho deserialize JSON
-public class ProductData
+public class ProductDto
 {
     public string Name { get; set; }
     public string Description { get; set; }
     public Guid CategoryId { get; set; }
-
-    public List<AttributeData> Attributes { get; set; }
-    public List<VariantData> Variants { get; set; }
+    public List<AttributeDto> Attribute { get; set; }
+    public List<VariantDto> Variant { get; set; }
 }
 
-public class AttributeData
+public class AttributeDto
 {
     public string Name { get; set; }
-    public bool IsParent { get; set; }
-    public Guid? ParentAttributeId { get; set; }
-    public List<AttributeValueData> Values { get; set; }
+    public bool isParent { get; set; }
+    public List<AttributeOptionDto> Options { get; set; }
 }
 
-public class AttributeValueData
+public class AttributeOptionDto
 {
     public string Value { get; set; }
-    public int? ImageIndex { get; set; } // Tham chiếu ảnh trong AttributeImages
+    public string Image { get; set; } // chứa tên "AttributeImage[i]"
 }
 
-public class VariantData
+public class VariantDto
 {
-    public string SKU { get; set; }
+    public List<int> AttributeIndex { get; set; }
     public decimal Price { get; set; }
-    public int StockQuantity { get; set; }
+    public int Stock { get; set; }
+    public string SKU { get; set; }
 }

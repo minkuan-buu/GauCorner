@@ -15,8 +15,6 @@ public partial class ProductAttribute
 
     public Guid? ParentAttributeId { get; set; }
 
-    public string? Image { get; set; }
-
     public virtual ICollection<AttributeValue> AttributeValues { get; set; } = new List<AttributeValue>();
 
     public virtual ICollection<ProductAttribute> InverseParentAttribute { get; set; } = new List<ProductAttribute>();

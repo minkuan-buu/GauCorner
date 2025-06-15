@@ -4,14 +4,18 @@ using GauCorner.Business.Services.DonateServices;
 using GauCorner.Business.Services.ProductServices;
 using GauCorner.Business.Services.UserServices;
 using GauCorner.Data.Entities;
+using GauCorner.Data.Repositories.AttributeValueRepositories;
 using GauCorner.Data.Repositories.CategoryRepositories;
 using GauCorner.Data.Repositories.DonateRepositories;
+using GauCorner.Data.Repositories.ProductAttributeRepositories;
 using GauCorner.Data.Repositories.ProductRepositories;
+using GauCorner.Data.Repositories.ProductVariantRepositories;
 using GauCorner.Data.Repositories.StreamConfigRepositories;
 using GauCorner.Data.Repositories.StreamConfigTypeRepositories;
 using GauCorner.Data.Repositories.UIConfigRepositories;
 using GauCorner.Data.Repositories.UserRepositories;
 using GauCorner.Data.Repositories.UserTokenRepositories;
+using GauCorner.Data.Repositories.VariantAttributeValueRepo;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
@@ -116,6 +120,10 @@ builder.Services.AddScoped<IDonateRepositories, DonateRepositories>();
 builder.Services.AddScoped<IUIConfigRepositories, UIConfigRepositories>();
 builder.Services.AddScoped<ICategoryRepositories, CategoryRepositories>();
 builder.Services.AddScoped<IProductRepositories, ProductRepositories>();
+builder.Services.AddScoped<IProductAttributeRepositories, ProductAttributeRepositories>();
+builder.Services.AddScoped<IAttributeValueRepositories, AttributeValueRepositories>();
+builder.Services.AddScoped<IProductVariantRepositories, ProductVariantRepositories>();
+builder.Services.AddScoped<IVariantAttributeValueRepo, VariantAttributeValueRepo>();
 
 //=========================================== SERVICE =============================================
 builder.Services.AddScoped<IUserServices, UserServices>();

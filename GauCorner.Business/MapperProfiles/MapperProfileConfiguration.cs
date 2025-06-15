@@ -43,6 +43,12 @@ namespace GauCorner.Business.MapperProfiles
                 .ForMember(dest => dest.LogoUrl, opt => opt.MapFrom(src => src.Uiconfigs.FirstOrDefault(x => x.IsUsed).LogoUrl))
                 .ForMember(dest => dest.ColorTone, opt => opt.MapFrom(src => src.Uiconfigs.FirstOrDefault(x => x.IsUsed).ColorTone))
                 .ForMember(dest => dest.Description, opt => opt.MapFrom(src => TextConvert.ConvertFromUnicodeEscape(src.Uiconfigs.FirstOrDefault(x => x.IsUsed).Description)));
+
+            CreateMap<ProductDto, Product>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => Guid.NewGuid()))
+                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => TextConvert.ConvertToUnicodeEscape(src.Name)))
+                .ForMember(dest => dest.Description, opt => opt.MapFrom(src => TextConvert.ConvertToUnicodeEscape(src.Description)))
+                .ForMember(dest => dest.CategoryId, opt => opt.MapFrom(src => src.CategoryId));
         }
     }
 }

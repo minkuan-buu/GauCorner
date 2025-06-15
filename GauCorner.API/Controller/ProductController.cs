@@ -2,8 +2,8 @@ using GauCorner.Business.Services.ProductServices;
 using GauCorner.Data.DTO.RequestModel;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 using Swashbuckle.AspNetCore.SwaggerGen;
+using System.Text.Json;
 
 namespace GauCorner.API.Controller
 {
@@ -11,34 +11,47 @@ namespace GauCorner.API.Controller
     [ApiController]
     public class ProductController : ControllerBase
     {
-        private readonly IProductServices _donateServices;
-        public ProductController(IProductServices donateServices)
+        private readonly IProductServices _productServices;
+        public ProductController(IProductServices productServices)
         {
-            _donateServices = donateServices;
+            _productServices = productServices;
         }
 
         [HttpPost]
-        public async Task<IActionResult> Donate([FromForm] ProductFormReqModel productReqModel)
+        public async Task<IActionResult> CreateProduct([FromForm] ProductFormWrapper wrapper)
         {
-            var variants = JsonConvert.DeserializeObject<List<ProductVariant>>(productReqModel.VariantsJson);
-            var files = Request.Form.Files;
-
-            // Group theo tên file: Images[0], Images[1], ...
-            var groupedImages = files
-                .Where(f => f.Name.StartsWith("Images["))
-                .GroupBy(f => f.Name)
-                .ToDictionary(g => g.Key, g => g.ToList());
-
-            for (int i = 0; i < variants.Count; i++)
+            var productDto = JsonSerializer.Deserialize<ProductDto>(wrapper.Product, new JsonSerializerOptions
             {
-                var key = $"Images[{i}]";
-                if (groupedImages.TryGetValue(key, out var images))
+                PropertyNameCaseInsensitive = true
+            });
+
+            // Lưu từng ảnh theo index
+            var savedOptionImages = new List<string>();
+            for (int i = 0; i < wrapper.AttributeImage.Length; i++)
+            {
+                var file = wrapper.AttributeImage[i];
+                var fileName = $"{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
+                var path = Path.Combine("wwwroot/uploads/attributes", fileName);
+
+                await using var stream = new FileStream(path, FileMode.Create);
+                await file.CopyToAsync(stream);
+
+                savedOptionImages.Add($"/uploads/attributes/{fileName}");
+            }
+
+            // Gán lại image URL vào Option tương ứng
+            var parentAttr = productDto.Attribute.FirstOrDefault(a => a.isParent);
+            if (parentAttr != null)
+            {
+                for (int i = 0; i < parentAttr.Options.Count; i++)
                 {
-                    variants[i].Image = images;
+                    parentAttr.Options[i].Image = savedOptionImages.ElementAtOrDefault(i);
                 }
             }
-            var result = await _donateServices.CreateProduct(productReqModel, variants);
+
+            var result = await _productServices.CreateProduct(productDto);
             return Ok(result);
         }
+
     }
 }

@@ -1,20 +1,6 @@
-using Microsoft.AspNetCore.Mvc;
-
-public class ProductCreateModel
+public class ProductFormWrapper
 {
-    // Product data (JSON)
-    [FromForm(Name = "productData")]
-    public string ProductDataJson { get; set; }
-
-    // Ảnh chính (nhiều ảnh)
-    [FromForm(Name = "mainImages")]
-    public List<IFormFile> MainImages { get; set; } = new();
-
-    // Ảnh thuộc tính (nhiều ảnh)
-    [FromForm(Name = "attributeImages")]
-    public List<IFormFile> AttributeImages { get; set; } = new();
-
-    // Ảnh biến thể (nhiều ảnh)
-    [FromForm(Name = "variantImages")]
-    public List<IFormFile> VariantImages { get; set; } = new();
+    public string Product { get; set; } // JSON string
+    public IFormFile[] AttributeImage { get; set; } // Files theo index
+    public IFormFile[] ProductImage { get; set; } // Files theo index
 }

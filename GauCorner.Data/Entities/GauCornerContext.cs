@@ -46,6 +46,9 @@ public partial class GauCornerContext : DbContext
             entity.HasKey(e => e.Id).HasName("PK__Attribut__3214EC0732C2A4CF");
 
             entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.Image)
+                .HasMaxLength(500)
+                .IsUnicode(false);
             entity.Property(e => e.Value)
                 .HasMaxLength(200)
                 .IsUnicode(false);
@@ -146,9 +149,6 @@ public partial class GauCornerContext : DbContext
             entity.HasKey(e => e.Id).HasName("PK__ProductA__3214EC07B84E4A73");
 
             entity.Property(e => e.Id).ValueGeneratedNever();
-            entity.Property(e => e.Image)
-                .HasMaxLength(500)
-                .IsUnicode(false);
             entity.Property(e => e.Name)
                 .HasMaxLength(200)
                 .IsUnicode(false);
@@ -317,6 +317,19 @@ public partial class GauCornerContext : DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__UserToken__UserI__571DF1D5");
         });
+
+        modelBuilder.Entity<VariantAttributeValue>()
+        .HasKey(v => new { v.VariantId, v.ValueId });
+
+        modelBuilder.Entity<VariantAttributeValue>()
+            .HasOne(v => v.Variant)
+            .WithMany(p => p.VariantAttributeValues)
+            .HasForeignKey(v => v.VariantId);
+
+        modelBuilder.Entity<VariantAttributeValue>()
+            .HasOne(v => v.Value)
+            .WithMany(p => p.VariantAttributeValues)
+            .HasForeignKey(v => v.ValueId);
 
         OnModelCreatingPartial(modelBuilder);
     }

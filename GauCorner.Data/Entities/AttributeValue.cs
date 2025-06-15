@@ -11,7 +11,11 @@ public partial class AttributeValue
 
     public string Value { get; set; } = null!;
 
+    public string? Image { get; set; }
+
     public virtual ProductAttribute Attribute { get; set; } = null!;
 
     public virtual ICollection<ProductVariant> Variants { get; set; } = new List<ProductVariant>();
+
+    public ICollection<VariantAttributeValue> VariantAttributeValues { get; set; }
 }
