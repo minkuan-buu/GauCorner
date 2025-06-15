@@ -32,12 +32,12 @@ namespace GauCorner.API.Controller
             {
                 var file = wrapper.AttributeImage[i];
                 var fileName = $"{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
-                var path = Path.Combine("wwwroot/uploads/attributes", fileName);
+                var path = Path.Combine("./uploads/shop/attributes", fileName);
 
                 await using var stream = new FileStream(path, FileMode.Create);
                 await file.CopyToAsync(stream);
 
-                savedOptionImages.Add($"/uploads/attributes/{fileName}");
+                savedOptionImages.Add($"/www/wwwroot/api.donate.buubuu.id.vn/GauCorner/GauCorner.API/publish/uploads/shop/attributes/{fileName}");
             }
 
             // Gán lại image URL vào Option tương ứng
