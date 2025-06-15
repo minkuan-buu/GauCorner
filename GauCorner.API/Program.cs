@@ -16,6 +16,7 @@ using GauCorner.Data.Repositories.UIConfigRepositories;
 using GauCorner.Data.Repositories.UserRepositories;
 using GauCorner.Data.Repositories.UserTokenRepositories;
 using GauCorner.Data.Repositories.VariantAttributeValueRepo;
+using GauCorner.Services.CategoryServices;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
@@ -129,6 +130,7 @@ builder.Services.AddScoped<IVariantAttributeValueRepo, VariantAttributeValueRepo
 builder.Services.AddScoped<IUserServices, UserServices>();
 builder.Services.AddScoped<IDonateServices, DonateServices>();
 builder.Services.AddScoped<IProductServices, ProductServices>();
+builder.Services.AddScoped<ICategoryServices, CategoryServices>();
 
 //=========================================== CORS ================================================
 var allowedOrigins = builder.Configuration.GetSection("AllowedOrigins").Get<string[]>();
