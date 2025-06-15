@@ -35,7 +35,7 @@ namespace GauCorner.API.Controller
             {
                 var file = wrapper.AttributeImage[i];
                 var fileName = $"{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
-                var path = Path.Combine("./uploads/shop/attributes", fileName);
+                var path = Path.Combine("/www/wwwroot/cdn.donate.buubuu.id.vn/uploads/shop/attributes", fileName);
 
                 // Tạo thư mục nếu chưa tồn tại
                 var folder = Path.GetDirectoryName(path);
@@ -47,7 +47,7 @@ namespace GauCorner.API.Controller
                 await using var stream = new FileStream(path, FileMode.Create);
                 await file.CopyToAsync(stream);
 
-                savedOptionImages.Add($"/www/wwwroot/api.donate.buubuu.id.vn/GauCorner/GauCorner.API/publish/uploads/shop/attributes/{fileName}");
+                savedOptionImages.Add($"https://cdn.donate.buubuu.id.vn/uploads/shop/attributes/{fileName}");
             }
             // Gán lại image URL vào Option tương ứng (cho parent attribute)
             var parentAttr = productDto.Attribute.FirstOrDefault(a => a.isParent);
@@ -66,7 +66,7 @@ namespace GauCorner.API.Controller
                 foreach (var file in wrapper.ProductImage)
                 {
                     var fileName = $"{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
-                    var path = Path.Combine("./uploads/shop/products", fileName);
+                    var path = Path.Combine("/www/wwwroot/cdn.donate.buubuu.id.vn/uploads/", fileName);
 
                     // Tạo thư mục nếu chưa tồn tại
                     var folder = Path.GetDirectoryName(path);
@@ -78,7 +78,7 @@ namespace GauCorner.API.Controller
                     await using var stream = new FileStream(path, FileMode.Create);
                     await file.CopyToAsync(stream);
 
-                    savedProductImages.Add($"/www/wwwroot/api.donate.buubuu.id.vn/GauCorner/GauCorner.API/publish/uploads/shop/products/{fileName}");
+                    savedProductImages.Add($"https://cdn.donate.buubuu.id.vn/uploads/shop/products/{fileName}");
                 }
             }
 
