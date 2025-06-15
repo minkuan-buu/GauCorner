@@ -66,7 +66,7 @@ namespace GauCorner.API.Controller
                 foreach (var file in wrapper.ProductImage)
                 {
                     var fileName = $"{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
-                    var path = Path.Combine("/www/wwwroot/cdn.donate.buubuu.id.vn/uploads/", fileName);
+                    var path = Path.Combine("/www/wwwroot/cdn.donate.buubuu.id.vn/uploads/shop/products/", fileName);
 
                     // Tạo thư mục nếu chưa tồn tại
                     var folder = Path.GetDirectoryName(path);
