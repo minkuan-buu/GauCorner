@@ -178,23 +178,6 @@ public partial class GauCornerContext : DbContext
                 .HasForeignKey(d => d.ProductId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__ProductVa__Produ__245D67DE");
-
-            entity.HasMany(d => d.Values).WithMany(p => p.Variants)
-                .UsingEntity<Dictionary<string, object>>(
-                    "VariantAttributeValue",
-                    r => r.HasOne<AttributeValue>().WithMany()
-                        .HasForeignKey("ValueId")
-                        .OnDelete(DeleteBehavior.ClientSetNull)
-                        .HasConstraintName("FK__VariantAt__Value__282DF8C2"),
-                    l => l.HasOne<ProductVariant>().WithMany()
-                        .HasForeignKey("VariantId")
-                        .OnDelete(DeleteBehavior.ClientSetNull)
-                        .HasConstraintName("FK__VariantAt__Varia__2739D489"),
-                    j =>
-                    {
-                        j.HasKey("VariantId", "ValueId").HasName("PK__VariantA__9791576067C3CD8D");
-                        j.ToTable("VariantAttributeValues");
-                    });
         });
 
         modelBuilder.Entity<StreamConfig>(entity =>
@@ -319,17 +302,23 @@ public partial class GauCornerContext : DbContext
         });
 
         modelBuilder.Entity<VariantAttributeValue>()
-        .HasKey(v => new { v.VariantId, v.ValueId });
+        .HasKey(vav => new { vav.VariantId, vav.ValueId });
 
         modelBuilder.Entity<VariantAttributeValue>()
-            .HasOne(v => v.Variant)
-            .WithMany(p => p.VariantAttributeValues)
-            .HasForeignKey(v => v.VariantId);
+            .HasOne(vav => vav.Variant)
+            .WithMany(v => v.VariantAttributeValues)
+            .HasForeignKey(vav => vav.VariantId)
+            .OnDelete(DeleteBehavior.ClientSetNull);
 
         modelBuilder.Entity<VariantAttributeValue>()
-            .HasOne(v => v.Value)
-            .WithMany(p => p.VariantAttributeValues)
-            .HasForeignKey(v => v.ValueId);
+            .HasOne(vav => vav.Value)
+            .WithMany(av => av.VariantAttributeValues)
+            .HasForeignKey(vav => vav.ValueId)
+            .OnDelete(DeleteBehavior.ClientSetNull);
+
+        modelBuilder.Entity<VariantAttributeValue>()
+            .ToTable("VariantAttributeValues");
+
 
         OnModelCreatingPartial(modelBuilder);
     }
