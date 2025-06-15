@@ -49,6 +49,24 @@ namespace GauCorner.Business.MapperProfiles
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => TextConvert.ConvertToUnicodeEscape(src.Name)))
                 .ForMember(dest => dest.Description, opt => opt.MapFrom(src => TextConvert.ConvertToUnicodeEscape(src.Description)))
                 .ForMember(dest => dest.CategoryId, opt => opt.MapFrom(src => src.CategoryId));
+
+            CreateMap<CategoryReqModel, Category>()
+                .ForMember(dest => dest.Name, opt => opt.MapFrom(src =>
+                    TextConvert.ConvertToUnicodeEscape(src.CategoryName)))
+                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => true));
+
+            CreateMap<SubCategoryReqModel, Category>()
+            .ForMember(dest => dest.Name, opt => opt.MapFrom(src =>
+                TextConvert.ConvertToUnicodeEscape(src.CategoryName)))
+            .ForMember(dest => dest.Status, opt => opt.MapFrom(src => true));
+            CreateMap<Category, SubCategoryResModel>()
+                .ForMember(dest => dest.Name, opt => opt.MapFrom(src =>
+                    TextConvert.ConvertFromUnicodeEscape(src.Name)))
+                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status));
+            CreateMap<Category, CategoryResModel>()
+                .ForMember(dest => dest.Name, opt => opt.MapFrom(src =>
+                    TextConvert.ConvertFromUnicodeEscape(src.Name)))
+                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status));
         }
     }
 }

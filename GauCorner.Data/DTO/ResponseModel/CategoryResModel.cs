@@ -10,7 +10,7 @@ namespace GauCorner.Data.DTO.ResponseModel
     {
         public Guid Id { get; set; }
         public string Name { get; set; } = null!;
-        public string Description { get; set; } = null!;
+        public bool Status { get; set; }
         public List<SubCategoryResModel>? SubCategories { get; set; } = null!;
     }
 
@@ -18,6 +18,6 @@ namespace GauCorner.Data.DTO.ResponseModel
     {
         public Guid Id { get; set; }
         public string Name { get; set; } = null!;
-        public string Description { get; set; } = null!;
+        public bool Status { get; set; }
     }
 }

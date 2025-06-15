@@ -9,14 +9,12 @@ namespace GauCorner.Data.DTO.RequestModel
     public class CategoryReqModel
     {
         public string CategoryName { get; set; } = null!;
-        public string Description { get; set; } = null!;
         public List<SubCategoryReqModel>? SubCategories { get; set; }
     }
 
     public class SubCategoryReqModel
     {
         public string CategoryName { get; set; } = null!;
-        public string Description { get; set; } = null!;
     }
 
     public class CategoryUpdateReqModel
