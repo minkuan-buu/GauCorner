@@ -3,6 +3,7 @@ using GauCorner.Business.Services.UserServices;
 using GauCorner.Data.DTO.Custom;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace GauCorner.API.Controller
 {
@@ -36,6 +37,32 @@ namespace GauCorner.API.Controller
                 Expires = DateTime.UtcNow.AddMonths(6)
             });
 
+            return Ok(result);
+        }
+
+        [HttpPost("logout")]
+        [Authorize(AuthenticationSchemes = "GauCornerAuthentication")]
+        public async Task<IActionResult> Logout()
+        {
+            var DeviceId = Request.Cookies["DeviceId"];
+            if (DeviceId == null)
+            {
+                throw new CustomException("DeviceId cookie is missing.");
+            }
+            var result = await _userServices.Logout(Guid.Parse(DeviceId));
+
+            Response.Cookies.Delete("DeviceId", new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.None
+            });
+            Response.Cookies.Delete("RefreshToken", new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.None
+            });
             return Ok(result);
         }
 
