@@ -1,3 +1,4 @@
+using System.Net;
 using AutoMapper;
 using GauCorner.Business.Utilities.Authentication;
 using GauCorner.Data.DTO.Custom;
@@ -8,6 +9,7 @@ using GauCorner.Data.Entities;
 using GauCorner.Data.Repositories.StreamConfigRepositories;
 using GauCorner.Data.Repositories.StreamConfigTypeRepositories;
 using GauCorner.Data.Repositories.UserRepositories;
+using GauCorner.Data.Repositories.UserTokenRepositories;
 using Microsoft.VisualBasic;
 
 namespace GauCorner.Business.Services.UserServices
@@ -17,17 +19,19 @@ namespace GauCorner.Business.Services.UserServices
         private readonly IUserRepositories _userRepositories;
         private readonly IStreamConfigTypeRepositories _streamConfigTypeRepositories;
         private readonly IStreamConfigRepositories _streamConfigRepositories;
+        private readonly IUserTokenRepositories _userTokenRepositories;
         private readonly IMapper _mapper;
 
-        public UserServices(IUserRepositories userRepositories, IMapper mapper, IStreamConfigTypeRepositories streamConfigTypeRepositories, IStreamConfigRepositories streamConfigRepositories)
+        public UserServices(IUserRepositories userRepositories, IMapper mapper, IStreamConfigTypeRepositories streamConfigTypeRepositories, IStreamConfigRepositories streamConfigRepositories, IUserTokenRepositories userTokenRepositories)
         {
             _streamConfigTypeRepositories = streamConfigTypeRepositories;
             _streamConfigRepositories = streamConfigRepositories;
             _userRepositories = userRepositories;
+            _userTokenRepositories = userTokenRepositories;
             _mapper = mapper;
         }
 
-        public async Task<ResultModel<UserLoginResModel>> Login(UserLoginModel userLoginModel)
+        public async Task<ResultModel<DataResultModel<UserLoginResModel>>> Login(UserLoginModel userLoginModel)
         {
             try
             {
@@ -40,11 +44,24 @@ namespace GauCorner.Business.Services.UserServices
                 {
                     throw new Exception("Password is incorrect");
                 }
-                var result = _mapper.Map<UserLoginResModel>(user);
-                return new ResultModel<UserLoginResModel>()
+                var Result = _mapper.Map<UserLoginResModel>(user);
+                UserToken NewUserToken = new UserToken()
                 {
-                    StatusCodes = 200,
-                    Response = result
+                    Id = Guid.NewGuid(),
+                    UserId = user.Id,
+                    AccesToken = Result.Auth.Token,
+                    RefreshToken = Result.Auth.RefreshToken,
+                    CreatedAt = DateTime.Now
+                };
+                Result.Auth.DeviceId = NewUserToken.Id;
+                await _userTokenRepositories.Insert(NewUserToken);
+                return new ResultModel<DataResultModel<UserLoginResModel>>()
+                {
+                    StatusCodes = (int)HttpStatusCode.OK,
+                    Response = new DataResultModel<UserLoginResModel>()
+                    {
+                        Data = Result
+                    }
                 };
             }
             catch (Exception ex)
@@ -99,6 +116,25 @@ namespace GauCorner.Business.Services.UserServices
             {
                 throw new CustomException($"Register failed: {ex.Message}");
             }
+        }
+
+        public async Task<ResultModel<MessageResultModel>> Logout(Guid DeviceId)
+        {
+            var MessageReturn = "Logout success! ";
+            var UserToken = await _userTokenRepositories.GetSingle(x => x.Id == DeviceId);
+            if (UserToken == null)
+            {
+                MessageReturn += "Warning: DeviceId is not found!";
+            }
+            else await _userTokenRepositories.Delete(UserToken);
+            return new ResultModel<MessageResultModel>()
+            {
+                StatusCodes = (int)HttpStatusCode.OK,
+                Response = new MessageResultModel()
+                {
+                    Message = MessageReturn
+                }
+            };
         }
 
         public async Task<UserAccount> GetUserById(Guid id)

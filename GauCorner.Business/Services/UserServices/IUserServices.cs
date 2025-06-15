@@ -7,8 +7,9 @@ namespace GauCorner.Business.Services.UserServices
 {
     public interface IUserServices
     {
-        Task<ResultModel<UserLoginResModel>> Login(UserLoginModel userLoginModel);
+        Task<ResultModel<DataResultModel<UserLoginResModel>>> Login(UserLoginModel userLoginModel);
         Task<ResultModel<MessageResultModel>> Register(UserRegisterModel userRegisterModel);
+        Task<ResultModel<MessageResultModel>> Logout(Guid DeviceId);
         Task<UserAccount> GetUserById(Guid id);
     }
 }
