@@ -3,6 +3,7 @@ public class ProductDto
     public string Name { get; set; }
     public string Description { get; set; }
     public Guid CategoryId { get; set; }
+    public List<string> ProductImage { get; set; } // chứa tên "ProductImage[i]"
     public List<AttributeDto> Attribute { get; set; }
     public List<VariantDto> Variant { get; set; }
 }

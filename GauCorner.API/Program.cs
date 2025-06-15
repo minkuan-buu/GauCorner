@@ -7,6 +7,7 @@ using GauCorner.Data.Entities;
 using GauCorner.Data.Repositories.AttributeValueRepositories;
 using GauCorner.Data.Repositories.CategoryRepositories;
 using GauCorner.Data.Repositories.DonateRepositories;
+using GauCorner.Data.Repositories.ProductAttachmentRepositories;
 using GauCorner.Data.Repositories.ProductAttributeRepositories;
 using GauCorner.Data.Repositories.ProductRepositories;
 using GauCorner.Data.Repositories.ProductVariantRepositories;
@@ -125,6 +126,7 @@ builder.Services.AddScoped<IProductAttributeRepositories, ProductAttributeReposi
 builder.Services.AddScoped<IAttributeValueRepositories, AttributeValueRepositories>();
 builder.Services.AddScoped<IProductVariantRepositories, ProductVariantRepositories>();
 builder.Services.AddScoped<IVariantAttributeValueRepo, VariantAttributeValueRepo>();
+builder.Services.AddScoped<IProductAttachmentRepositories, ProductAttachmentRepositories>();
 
 //=========================================== SERVICE =============================================
 builder.Services.AddScoped<IUserServices, UserServices>();

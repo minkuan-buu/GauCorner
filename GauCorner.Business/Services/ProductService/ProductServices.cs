@@ -6,6 +6,7 @@ using GauCorner.Data.DTO.ResponseModel;
 using GauCorner.Data.DTO.ResponseModel.ResultModel;
 using GauCorner.Data.Entities;
 using GauCorner.Data.Repositories.AttributeValueRepositories;
+using GauCorner.Data.Repositories.ProductAttachmentRepositories;
 using GauCorner.Data.Repositories.ProductAttributeRepositories;
 using GauCorner.Data.Repositories.ProductRepositories;
 using GauCorner.Data.Repositories.ProductVariantRepositories;
@@ -22,9 +23,10 @@ namespace GauCorner.Business.Services.ProductServices
         private readonly IAttributeValueRepositories _attributeValueRepositories;
         private readonly IProductVariantRepositories _productVariantRepositories;
         private readonly IVariantAttributeValueRepo _variantAttributeValueRepositories;
+        private readonly IProductAttachmentRepositories _productAttachmentRepositories;
         public ProductServices(IMapper mapper,
                                IProductRepositories productRepositories,
-                               IProductAttributeRepositories productAttributeRepositories, IAttributeValueRepositories attributeValueRepositories, IProductVariantRepositories productVariantRepositories, IVariantAttributeValueRepo variantAttributeValueRepositories)
+                               IProductAttributeRepositories productAttributeRepositories, IAttributeValueRepositories attributeValueRepositories, IProductVariantRepositories productVariantRepositories, IVariantAttributeValueRepo variantAttributeValueRepositories, IProductAttachmentRepositories productAttachmentRepositories)
         {
             _mapper = mapper;
             _productRepositories = productRepositories;
@@ -32,6 +34,7 @@ namespace GauCorner.Business.Services.ProductServices
             _attributeValueRepositories = attributeValueRepositories;
             _productVariantRepositories = productVariantRepositories;
             _variantAttributeValueRepositories = variantAttributeValueRepositories;
+            _productAttachmentRepositories = productAttachmentRepositories;
         }
         public async Task<ResultModel<MessageResultModel>> CreateProduct(ProductDto productModel, string Token)
         {
@@ -120,11 +123,25 @@ namespace GauCorner.Business.Services.ProductServices
                 }
             }
 
+            var productImageUrls = new List<ProductAttachment>();
+            foreach (var image in productModel.ProductImage)
+            {
+                var attachment = new ProductAttachment
+                {
+                    Id = Guid.NewGuid(),
+                    ProductId = productId,
+                    Type = "Image",
+                    AttachmentUrl = image, // Assuming image is the URL or path to the image
+                };
+                productImageUrls.Add(attachment);
+            }
+
             await _productRepositories.Insert(product);
             await _productAttributeRepositories.InsertRange(productAttributes);
             await _attributeValueRepositories.InsertRange(attributeValues);
             await _productVariantRepositories.InsertRange(productVariants);
             await _variantAttributeValueRepositories.InsertRange(variantAttributeValues);
+            await _productAttachmentRepositories.InsertRange(productImageUrls);
             // Save all to database
             // Assuming you use Entity Framework DbContext
             // Example:
