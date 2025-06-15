@@ -18,6 +18,13 @@ namespace GauCorner.API.Controller
             _productServices = productServices;
         }
 
+        [HttpGet("{productId}")]
+        public async Task<IActionResult> GetProductDetail(Guid productId)
+        {
+            var result = await _productServices.GetProductDetail(productId);
+            return Ok(result);
+        }
+
         [HttpPost]
         [Authorize(AuthenticationSchemes = "GauCornerAuthentication")]
         public async Task<IActionResult> CreateProduct([FromForm] ProductFormWrapper wrapper)

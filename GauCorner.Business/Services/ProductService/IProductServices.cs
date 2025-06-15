@@ -7,7 +7,7 @@ namespace GauCorner.Business.Services.ProductServices
     public interface IProductServices
     {
         // Task<ResultModel<ProductPageResModel>> GetProductPage(string userPath);
-        // Task<ResultModel<ProductDetailResModel>> GetProductDetail(int productId, string userPath);
+        Task<ResultModel<DataResultModel<ProductDetailDto>>> GetProductDetail(Guid productId);
         Task<ResultModel<MessageResultModel>> CreateProduct(ProductDto productModel, string Token);
     }
 }

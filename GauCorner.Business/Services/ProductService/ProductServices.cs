@@ -162,6 +162,74 @@ namespace GauCorner.Business.Services.ProductServices
             };
         }
 
+        public async Task<ResultModel<DataResultModel<ProductDetailDto>>> GetProductDetail(Guid productId)
+        {
+            var product = await _productRepositories.GetSingle(
+                x => x.Id == productId,
+                includeProperties: "Category,ProductAttachments,ProductAttributes.AttributeValues,ProductVariants.VariantAttributeValues.Value"
+            );
+
+            if (product == null)
+                throw new Exception("Product not found");
+
+            var attributeList = product.ProductAttributes
+                .OrderByDescending(a => a.IsParent)
+                .Select((attr, index) => new
+                {
+                    Attribute = attr,
+                    Index = index,
+                    OptionList = attr.AttributeValues.OrderByDescending(o => o.Id).ToList()
+                }).ToList();
+
+            var dto = new ProductDetailDto
+            {
+                Id = product.Id,
+                Name = TextConvert.ConvertFromUnicodeEscape(product.Name),
+                Description = TextConvert.ConvertFromUnicodeEscape(product.Description),
+                CategoryId = product.CategoryId,
+                CategoryName = TextConvert.ConvertFromUnicodeEscape(product.Category.Name),
+                ProductImages = product.ProductAttachments.Select(i => i.AttachmentUrl).ToList(),
+                Attribute = attributeList.Select(a => new ProductAttributeDto
+                {
+                    Name = TextConvert.ConvertFromUnicodeEscape(a.Attribute.Name),
+                    IsParent = a.Attribute.IsParent,
+                    Options = a.OptionList.Select(opt => new ProductOptionDto
+                    {
+                        Id = opt.Id,
+                        Value = TextConvert.ConvertFromUnicodeEscape(opt.Value),
+                        Image = opt.Image
+                    }).ToList()
+                }).ToList(),
+                Variant = product.ProductVariants.Select(variant =>
+                {
+                    var attributeIndexList = attributeList.Select(attr =>
+                    {
+                        var valueId = variant.VariantAttributeValues
+                            .FirstOrDefault(vav => attr.OptionList.Any(o => o.Id == vav.ValueId))?.ValueId;
+
+                        return attr.OptionList.FindIndex(o => o.Id == valueId);
+                    }).ToList();
+
+                    return new ProductVariantDto
+                    {
+                        AttributeIndex = attributeIndexList,
+                        Price = variant.Price,
+                        Stock = variant.StockQuantity,
+                        SKU = variant.Sku
+                    };
+                }).ToList()
+            };
+            return new ResultModel<DataResultModel<ProductDetailDto>>
+            {
+                StatusCodes = StatusCodes.Status200OK,
+                Response = new DataResultModel<ProductDetailDto>
+                {
+                    Data = dto,
+                }
+            };
+        }
+
+
 
         // Uncomment and implement these methods if needed
         /*
