@@ -1,4 +1,5 @@
 using AutoMapper;
+using GauCorner.Business.Utilities.Authentication;
 using GauCorner.Data.DTO.RequestModel;
 using GauCorner.Data.DTO.ResponseModel;
 using GauCorner.Data.DTO.ResponseModel.ResultModel;
@@ -31,9 +32,10 @@ namespace GauCorner.Business.Services.ProductServices
             _productVariantRepositories = productVariantRepositories;
             _variantAttributeValueRepositories = variantAttributeValueRepositories;
         }
-        public async Task<ResultModel<MessageResultModel>> CreateProduct(ProductDto productModel)
+        public async Task<ResultModel<MessageResultModel>> CreateProduct(ProductDto productModel, string Token)
         {
             var productId = Guid.NewGuid();
+            var userId = Guid.Parse(Authentication.DecodeToken(Token, "userid"));
 
             var product = new Product
             {
@@ -41,6 +43,7 @@ namespace GauCorner.Business.Services.ProductServices
                 Name = productModel.Name,
                 Description = productModel.Description,
                 CategoryId = productModel.CategoryId,
+                CreatedBy = userId,
                 Status = true
             };
 

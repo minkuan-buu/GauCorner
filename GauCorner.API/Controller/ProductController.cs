@@ -20,6 +20,7 @@ namespace GauCorner.API.Controller
         [HttpPost]
         public async Task<IActionResult> CreateProduct([FromForm] ProductFormWrapper wrapper)
         {
+            var token = Request.Headers["Authorization"].ToString().Split(" ")[1];
             var productDto = JsonSerializer.Deserialize<ProductDto>(wrapper.Product, new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true
@@ -49,7 +50,7 @@ namespace GauCorner.API.Controller
                 }
             }
 
-            var result = await _productServices.CreateProduct(productDto);
+            var result = await _productServices.CreateProduct(productDto, token);
             return Ok(result);
         }
 

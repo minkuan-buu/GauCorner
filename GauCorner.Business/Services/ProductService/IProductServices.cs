@@ -8,6 +8,6 @@ namespace GauCorner.Business.Services.ProductServices
     {
         // Task<ResultModel<ProductPageResModel>> GetProductPage(string userPath);
         // Task<ResultModel<ProductDetailResModel>> GetProductDetail(int productId, string userPath);
-        Task<ResultModel<MessageResultModel>> CreateProduct(ProductDto productModel);
+        Task<ResultModel<MessageResultModel>> CreateProduct(ProductDto productModel, string Token);
     }
 }
