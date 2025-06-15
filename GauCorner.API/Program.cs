@@ -3,6 +3,7 @@ using GauCorner.Business.MapperProfiles;
 using GauCorner.Business.Services.DonateServices;
 using GauCorner.Business.Services.ProductServices;
 using GauCorner.Business.Services.UserServices;
+using GauCorner.Business.Services.UserTokenServices;
 using GauCorner.Data.Entities;
 using GauCorner.Data.Repositories.AttributeValueRepositories;
 using GauCorner.Data.Repositories.CategoryRepositories;
@@ -138,6 +139,7 @@ builder.Services.AddScoped<IUserServices, UserServices>();
 builder.Services.AddScoped<IDonateServices, DonateServices>();
 builder.Services.AddScoped<IProductServices, ProductServices>();
 builder.Services.AddScoped<ICategoryServices, CategoryServices>();
+builder.Services.AddScoped<IUserTokenServices, UserTokenServices>();
 
 //=========================================== CORS ================================================
 var allowedOrigins = builder.Configuration.GetSection("AllowedOrigins").Get<string[]>();
