@@ -5,13 +5,19 @@ public class ProductDetailDto
     public Guid Id { get; set; }
     public string Name { get; set; }
     public string Description { get; set; }
-    public Guid CategoryId { get; set; }
-    public string CategoryName { get; set; }
-
+    public CategoryDto Category { get; set; }
+    public string MainCategoryName { get; set; }
     public List<string> ProductImages { get; set; }
-
     public List<ProductAttributeDto> Attribute { get; set; }
     public List<ProductVariantDto> Variant { get; set; }
+}
+
+public class CategoryDto
+{
+    public Guid Id { get; set; }
+    public string Name { get; set; }
+    public bool Status { get; set; }
+    public List<CategoryDto>? SubCategories { get; set; } = null!;
 }
 
 public class ProductAttributeDto

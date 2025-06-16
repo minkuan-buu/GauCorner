@@ -6,6 +6,7 @@ using GauCorner.Data.DTO.ResponseModel;
 using GauCorner.Data.DTO.ResponseModel.ResultModel;
 using GauCorner.Data.Entities;
 using GauCorner.Data.Repositories.AttributeValueRepositories;
+using GauCorner.Data.Repositories.CategoryRepositories;
 using GauCorner.Data.Repositories.ProductAttachmentRepositories;
 using GauCorner.Data.Repositories.ProductAttributeRepositories;
 using GauCorner.Data.Repositories.ProductRepositories;
@@ -24,9 +25,10 @@ namespace GauCorner.Business.Services.ProductServices
         private readonly IProductVariantRepositories _productVariantRepositories;
         private readonly IVariantAttributeValueRepo _variantAttributeValueRepositories;
         private readonly IProductAttachmentRepositories _productAttachmentRepositories;
+        private readonly ICategoryRepositories _categoryRepositories;
         public ProductServices(IMapper mapper,
                                IProductRepositories productRepositories,
-                               IProductAttributeRepositories productAttributeRepositories, IAttributeValueRepositories attributeValueRepositories, IProductVariantRepositories productVariantRepositories, IVariantAttributeValueRepo variantAttributeValueRepositories, IProductAttachmentRepositories productAttachmentRepositories)
+                               IProductAttributeRepositories productAttributeRepositories, IAttributeValueRepositories attributeValueRepositories, IProductVariantRepositories productVariantRepositories, IVariantAttributeValueRepo variantAttributeValueRepositories, IProductAttachmentRepositories productAttachmentRepositories, ICategoryRepositories categoryRepositories)
         {
             _mapper = mapper;
             _productRepositories = productRepositories;
@@ -35,6 +37,7 @@ namespace GauCorner.Business.Services.ProductServices
             _productVariantRepositories = productVariantRepositories;
             _variantAttributeValueRepositories = variantAttributeValueRepositories;
             _productAttachmentRepositories = productAttachmentRepositories;
+            _categoryRepositories = categoryRepositories;
         }
         public async Task<ResultModel<MessageResultModel>> CreateProduct(ProductDto productModel, string Token)
         {
@@ -181,13 +184,15 @@ namespace GauCorner.Business.Services.ProductServices
                     OptionList = attr.AttributeValues.ToList()
                 }).ToList();
 
+            var categories = await _categoryRepositories.GetList();
+            CategoryDto? categoryHierarchy = BuildCategoryHierarchy(categories.ToList(), product.CategoryId);
             var dto = new ProductDetailDto
             {
                 Id = product.Id,
                 Name = TextConvert.ConvertFromUnicodeEscape(product.Name),
                 Description = TextConvert.ConvertFromUnicodeEscape(product.Description),
-                CategoryId = product.CategoryId,
-                CategoryName = TextConvert.ConvertFromUnicodeEscape(product.Category.Name),
+                Category = categoryHierarchy,
+                MainCategoryName = TextConvert.ConvertFromUnicodeEscape(product.Category.Name),
                 ProductImages = product.ProductAttachments.Select(i => i.AttachmentUrl).ToList(),
                 Attribute = attributeList.Select(a => new ProductAttributeDto
                 {
@@ -231,6 +236,49 @@ namespace GauCorner.Business.Services.ProductServices
             };
         }
 
+        private CategoryDto BuildCategoryHierarchy(List<Category> allCategories, Guid leafCategoryId)
+        {
+            var path = new Stack<Category>();
+
+            // Truy ngược từ leaf → root
+            var current = allCategories.FirstOrDefault(c => c.Id == leafCategoryId);
+            while (current != null)
+            {
+                path.Push(current);
+                current = current.ParentCategoryId != null
+                    ? allCategories.FirstOrDefault(c => c.Id == current.ParentCategoryId)
+                    : null;
+            }
+
+            // Dựng cây CategoryDto từ root → leaf
+            CategoryDto? root = null;
+            CategoryDto? currentNode = null;
+
+            while (path.Count > 0)
+            {
+                var cat = path.Pop();
+                var node = new CategoryDto
+                {
+                    Id = cat.Id,
+                    Name = TextConvert.ConvertFromUnicodeEscape(cat.Name),
+                    Status = cat.Status,
+                    SubCategories = new List<CategoryDto>()
+                };
+
+                if (root == null)
+                {
+                    root = node;
+                    currentNode = node;
+                }
+                else
+                {
+                    currentNode!.SubCategories!.Add(node);
+                    currentNode = node;
+                }
+            }
+
+            return root!;
+        }
 
 
         // Uncomment and implement these methods if needed
