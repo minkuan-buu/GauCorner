@@ -319,7 +319,7 @@ namespace GauCorner.Business.Services.ProductServices
                 orderBy: orderBy,
                 includeProperties: "ProductVariants,ProductAttachments,CreatedByNavigation",
                 pageIndex: request.Page ?? 1,
-                pageSize: request.PageSize ?? 8
+                pageSize: request.PageSize ?? 10
             );
 
             var data = pagedData.Data;
