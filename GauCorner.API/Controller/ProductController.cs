@@ -45,23 +45,26 @@ namespace GauCorner.API.Controller
 
             // Lưu ảnh AttributeImage
             var savedOptionImages = new List<string>();
-            for (int i = 0; i < wrapper.AttributeImage.Length; i++)
+            if (wrapper.AttributeImage != null || wrapper.AttributeImage?.Length != 0)
             {
-                var file = wrapper.AttributeImage[i];
-                var fileName = $"{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
-                var path = Path.Combine("/www/wwwroot/cdn.donate.buubuu.id.vn/uploads/shop/attributes", fileName);
-
-                // Tạo thư mục nếu chưa tồn tại
-                var folder = Path.GetDirectoryName(path);
-                if (!Directory.Exists(folder))
+                for (int i = 0; i < wrapper.AttributeImage?.Length; i++)
                 {
-                    Directory.CreateDirectory(folder);
+                    var file = wrapper.AttributeImage[i];
+                    var fileName = $"{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
+                    var path = Path.Combine("/www/wwwroot/cdn.donate.buubuu.id.vn/uploads/shop/attributes", fileName);
+
+                    // Tạo thư mục nếu chưa tồn tại
+                    var folder = Path.GetDirectoryName(path);
+                    if (!Directory.Exists(folder))
+                    {
+                        Directory.CreateDirectory(folder);
+                    }
+
+                    await using var stream = new FileStream(path, FileMode.Create);
+                    await file.CopyToAsync(stream);
+
+                    savedOptionImages.Add($"https://cdn.donate.buubuu.id.vn/uploads/shop/attributes/{fileName}");
                 }
-
-                await using var stream = new FileStream(path, FileMode.Create);
-                await file.CopyToAsync(stream);
-
-                savedOptionImages.Add($"https://cdn.donate.buubuu.id.vn/uploads/shop/attributes/{fileName}");
             }
             // Gán lại image URL vào Option tương ứng (cho parent attribute)
             var parentAttr = productDto.Attribute.FirstOrDefault(a => a.isParent);
