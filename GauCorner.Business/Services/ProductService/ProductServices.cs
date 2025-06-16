@@ -343,7 +343,7 @@ namespace GauCorner.Business.Services.ProductServices
                 {
                     Id = p.Id,
                     Name = TextConvert.ConvertFromUnicodeEscape(p.Name),
-                    Thumbnail = p.ProductAttachments.FirstOrDefault()?.AttachmentUrl ?? "",
+                    Thumbnail = p.ProductAttachments.OrderBy(x => x.Index).FirstOrDefault()?.AttachmentUrl ?? "",
                     Variants = (
                         request.SortBy == "price" && (request.IsDescending ?? false)
                             ? p.ProductVariants.OrderByDescending(v => v.Price)
