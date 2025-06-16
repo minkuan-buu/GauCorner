@@ -86,7 +86,7 @@ namespace GauCorner.Business.Services.ProductServices
                         Id = Guid.NewGuid(),
                         AttributeId = attrId,
                         Value = TextConvert.ConvertToUnicodeEscape(option.Value),
-                        Image = option.Image
+                        Image = option.Image ?? null
                     });
                 }
             }

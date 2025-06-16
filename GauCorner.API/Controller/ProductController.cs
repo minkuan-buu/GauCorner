@@ -65,7 +65,7 @@ namespace GauCorner.API.Controller
             }
             // Gán lại image URL vào Option tương ứng (cho parent attribute)
             var parentAttr = productDto.Attribute.FirstOrDefault(a => a.isParent);
-            if (parentAttr != null)
+            if (parentAttr != null && savedOptionImages.Count > 0)
             {
                 for (int i = 0; i < parentAttr.Options.Count; i++)
                 {
