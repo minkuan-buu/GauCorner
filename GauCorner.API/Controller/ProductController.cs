@@ -18,10 +18,10 @@ namespace GauCorner.API.Controller
             _productServices = productServices;
         }
 
-        [HttpGet("{productId}")]
-        public async Task<IActionResult> GetProductDetail(Guid productId)
+        [HttpGet("{productId}/shop/{slug}")]
+        public async Task<IActionResult> GetProductDetail(Guid productId, string slug)
         {
-            var result = await _productServices.GetProductDetail(productId);
+            var result = await _productServices.GetProductDetail(productId, slug);
             return Ok(result);
         }
 

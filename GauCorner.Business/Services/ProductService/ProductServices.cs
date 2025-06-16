@@ -162,11 +162,11 @@ namespace GauCorner.Business.Services.ProductServices
             };
         }
 
-        public async Task<ResultModel<DataResultModel<ProductDetailDto>>> GetProductDetail(Guid productId)
+        public async Task<ResultModel<DataResultModel<ProductDetailDto>>> GetProductDetail(Guid productId, string slug)
         {
             var product = await _productRepositories.GetSingle(
-                x => x.Id == productId,
-                includeProperties: "Category,ProductAttachments,ProductAttributes.AttributeValues,ProductVariants.VariantAttributeValues.Value"
+                x => x.Id == productId && x.CreatedByNavigation.Path == slug,
+                includeProperties: "CreatedByNavigation,Category,ProductAttachments,ProductAttributes.AttributeValues,ProductVariants.VariantAttributeValues.Value"
             );
 
             if (product == null)
