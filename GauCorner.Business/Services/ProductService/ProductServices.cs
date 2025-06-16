@@ -178,7 +178,7 @@ namespace GauCorner.Business.Services.ProductServices
                 {
                     Attribute = attr,
                     Index = index,
-                    OptionList = attr.AttributeValues.OrderByDescending(o => o.Id).ToList()
+                    OptionList = attr.AttributeValues.ToList()
                 }).ToList();
 
             var dto = new ProductDetailDto
@@ -202,12 +202,14 @@ namespace GauCorner.Business.Services.ProductServices
                 }).ToList(),
                 Variant = product.ProductVariants.Select(variant =>
                 {
+                    // Mỗi attribute trong attributeList đại diện cho 1 nhóm giá trị (màu, size, etc.)
                     var attributeIndexList = attributeList.Select(attr =>
                     {
+                        // Tìm valueId (là AttributeValue.Id) thuộc về Variant và trong nhóm này
                         var valueId = variant.VariantAttributeValues
                             .FirstOrDefault(vav => attr.OptionList.Any(o => o.Id == vav.ValueId))?.ValueId;
 
-                        return attr.OptionList.FindIndex(o => o.Id == valueId);
+                        return valueId ?? Guid.Empty;
                     }).ToList();
 
                     return new ProductVariantDto

@@ -30,7 +30,7 @@ public class ProductOptionDto
 
 public class ProductVariantDto
 {
-    public List<int> AttributeIndex { get; set; } // Index theo từng Option trong Attribute
+    public List<Guid> AttributeIndex { get; set; } // Index theo từng Option trong Attribute
     public decimal Price { get; set; }
     public int Stock { get; set; }
     public string SKU { get; set; }
