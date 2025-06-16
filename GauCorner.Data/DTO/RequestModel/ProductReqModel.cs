@@ -31,10 +31,10 @@ public class VariantDto
 
 public class PaginationRequest
 {
-    public int Page { get; set; } = 1;
-    public int PageSize { get; set; } = 10;
-    public string SortBy { get; set; } = "Name"; // Default sort by Name
-    public bool IsDescending { get; set; } = false;
+    public int? Page { get; set; } = 1;
+    public int? PageSize { get; set; } = 10;
+    public string? SortBy { get; set; } = "Name"; // Default sort by Name
+    public bool? IsDescending { get; set; } = false;
     public string? Keyword { get; set; }
     public Guid? CategoryId { get; set; }
 }

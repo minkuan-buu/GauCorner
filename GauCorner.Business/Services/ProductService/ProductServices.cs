@@ -302,13 +302,13 @@ namespace GauCorner.Business.Services.ProductServices
 
             if (request.SortBy == "price")
             {
-                orderBy = request.IsDescending
+                orderBy = (request.IsDescending ?? false)
                     ? q => q.OrderByDescending(p => p.ProductVariants.Max(v => v.Price))
                     : q => q.OrderBy(p => p.ProductVariants.Min(v => v.Price));
             }
             else
             {
-                orderBy = request.IsDescending
+                orderBy = (request.IsDescending ?? false)
                     ? q => q.OrderByDescending(p => p.Name)
                     : q => q.OrderBy(p => p.Name);
             }
@@ -318,8 +318,8 @@ namespace GauCorner.Business.Services.ProductServices
                 filter: filter,
                 orderBy: orderBy,
                 includeProperties: "ProductVariants,ProductAttachments,CreatedByNavigation",
-                pageIndex: request.Page,
-                pageSize: request.PageSize
+                pageIndex: request.Page ?? 1,
+                pageSize: request.PageSize ?? 8
             );
 
             var data = pagedData.Data;
@@ -345,7 +345,7 @@ namespace GauCorner.Business.Services.ProductServices
                     Name = TextConvert.ConvertFromUnicodeEscape(p.Name),
                     Thumbnail = p.ProductAttachments.FirstOrDefault()?.AttachmentUrl ?? "",
                     Variants = (
-                        request.SortBy == "price" && request.IsDescending
+                        request.SortBy == "price" && (request.IsDescending ?? false)
                             ? p.ProductVariants.OrderByDescending(v => v.Price)
                             : p.ProductVariants.OrderBy(v => v.Price)
                     )
