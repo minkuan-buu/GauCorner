@@ -13,6 +13,8 @@ using GauCorner.Data.Repositories.ProductRepositories;
 using GauCorner.Data.Repositories.ProductVariantRepositories;
 using GauCorner.Data.Repositories.VariantAttributeValueRepo;
 using Microsoft.AspNetCore.Http;
+using System.Linq.Expressions;
+using LinqKit;
 
 namespace GauCorner.Business.Services.ProductServices
 {
@@ -127,6 +129,7 @@ namespace GauCorner.Business.Services.ProductServices
             }
 
             var productImageUrls = new List<ProductAttachment>();
+            // Assuming productModel.ProductImage is a list of image URLs or paths
             foreach (var image in productModel.ProductImage)
             {
                 var attachment = new ProductAttachment
@@ -135,6 +138,7 @@ namespace GauCorner.Business.Services.ProductServices
                     ProductId = productId,
                     Type = "Image",
                     AttachmentUrl = image, // Assuming image is the URL or path to the image
+                    Index = productImageUrls.Count // Assign index based on current count
                 };
                 productImageUrls.Add(attachment);
             }
@@ -193,7 +197,7 @@ namespace GauCorner.Business.Services.ProductServices
                 Description = TextConvert.ConvertFromUnicodeEscape(product.Description),
                 Category = categoryHierarchy,
                 MainCategoryName = TextConvert.ConvertFromUnicodeEscape(product.Category.Name),
-                ProductImages = product.ProductAttachments.Select(i => i.AttachmentUrl).ToList(),
+                ProductImages = product.ProductAttachments.OrderBy(x => x.Index).Select(i => i.AttachmentUrl).ToList(),
                 Attribute = attributeList.Select(a => new ProductAttributeDto
                 {
                     Name = TextConvert.ConvertFromUnicodeEscape(a.Attribute.Name),
@@ -279,6 +283,90 @@ namespace GauCorner.Business.Services.ProductServices
 
             return root!;
         }
+
+        public async Task<ResultModel<ListDataResultModel<ProductResModel>>> GetAllProducts(PaginationRequest request, string userPath)
+        {
+            // B1: Tạo filter cơ bản
+            Expression<Func<Product, bool>> filter = p => true;
+
+            // Chỉ thêm các filter có thể dịch sang SQL
+            filter = filter.And(p => p.CreatedByNavigation.Path == userPath);
+
+            if (request.CategoryId.HasValue)
+            {
+                filter = filter.And(p => p.CategoryId == request.CategoryId);
+            }
+
+            // B2: Chọn kiểu sắp xếp
+            Func<IQueryable<Product>, IOrderedQueryable<Product>> orderBy;
+
+            if (request.SortBy == "price")
+            {
+                orderBy = request.IsDescending
+                    ? q => q.OrderByDescending(p => p.ProductVariants.Max(v => v.Price))
+                    : q => q.OrderBy(p => p.ProductVariants.Min(v => v.Price));
+            }
+            else
+            {
+                orderBy = request.IsDescending
+                    ? q => q.OrderByDescending(p => p.Name)
+                    : q => q.OrderBy(p => p.Name);
+            }
+
+            // B3: Lấy dữ liệu trước, sau đó lọc keyword trên client
+            var pagedData = await _productRepositories.GetPagedList(
+                filter: filter,
+                orderBy: orderBy,
+                includeProperties: "ProductVariants,ProductAttachments,CreatedByNavigation",
+                pageIndex: request.Page,
+                pageSize: request.PageSize
+            );
+
+            var data = pagedData.Data;
+
+            // B4: Lọc keyword sau khi đã lấy dữ liệu về (client-side)
+            if (!string.IsNullOrWhiteSpace(request.Keyword))
+            {
+                var keyword = request.Keyword.ToLower();
+                data = data.Where(p => TextConvert.ConvertFromUnicodeEscape(p.Name).ToLower().Contains(keyword)
+                ).ToList();
+            }
+
+            // B5: Map kết quả
+            var response = new ListDataResultModel<ProductResModel>
+            {
+                CurrentPage = pagedData.CurrentPage,
+                PageSize = pagedData.PageSize,
+                TotalItems = pagedData.TotalItems,
+                TotalPages = pagedData.TotalPages,
+                Data = data.Select(p => new ProductResModel
+                {
+                    Id = p.Id,
+                    Name = TextConvert.ConvertFromUnicodeEscape(p.Name),
+                    Thumbnail = p.ProductAttachments.FirstOrDefault()?.AttachmentUrl ?? "",
+                    Variants = (
+                        request.SortBy == "price" && request.IsDescending
+                            ? p.ProductVariants.OrderByDescending(v => v.Price)
+                            : p.ProductVariants.OrderBy(v => v.Price)
+                    )
+                    .Select(v => new ProductVariantAllDto
+                    {
+                        Price = v.Price,
+                        Stock = v.StockQuantity,
+                        SKU = v.Sku
+                    }).ToList()
+                }).ToList()
+            };
+
+            return new ResultModel<ListDataResultModel<ProductResModel>>
+            {
+                StatusCodes = StatusCodes.Status200OK,
+                Response = response
+            };
+        }
+
+
+
 
 
         // Uncomment and implement these methods if needed

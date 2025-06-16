@@ -1,4 +1,13 @@
 using System.Security.Cryptography.X509Certificates;
+using GauCorner.Data.Entities;
+
+public class ProductResModel
+{
+    public Guid Id { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public string Thumbnail { get; set; } = string.Empty;
+    public List<ProductVariantAllDto> Variants { get; set; } = new List<ProductVariantAllDto>();
+}
 
 public class ProductDetailDto
 {
@@ -37,6 +46,13 @@ public class ProductOptionDto
 public class ProductVariantDto
 {
     public List<Guid> AttributeIndex { get; set; } // Index theo từng Option trong Attribute
+    public decimal Price { get; set; }
+    public int Stock { get; set; }
+    public string SKU { get; set; }
+}
+
+public class ProductVariantAllDto
+{
     public decimal Price { get; set; }
     public int Stock { get; set; }
     public string SKU { get; set; }

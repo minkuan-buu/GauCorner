@@ -13,5 +13,7 @@ public partial class ProductAttachment
 
     public string AttachmentUrl { get; set; } = null!;
 
+    public int Index { get; set; }
+
     public virtual Product Product { get; set; } = null!;
 }

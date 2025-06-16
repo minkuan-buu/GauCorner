@@ -18,5 +18,6 @@ public partial class ProductVariant
     public virtual Product Product { get; set; } = null!;
 
     public virtual ICollection<AttributeValue> Values { get; set; } = new List<AttributeValue>();
+
     public ICollection<VariantAttributeValue> VariantAttributeValues { get; set; }
 }

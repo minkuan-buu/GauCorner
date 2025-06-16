@@ -4,6 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
+using GauCorner.Data.DTO.ResponseModel.ResultModel;
 
 namespace GauCorner.Data.Repositories.GenericRepositories
 {
@@ -15,6 +16,14 @@ namespace GauCorner.Data.Repositories.GenericRepositories
             string includeProperties = "",
             int? pageIndex = null,
             int? pageSize = null);
+
+        Task<ListDataResultModel<T>> GetPagedList(
+            Expression<Func<T, bool>> filter = null,
+            Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,
+            string includeProperties = "",
+            int pageIndex = 1,
+            int pageSize = 10
+        );
 
         Task<T> GetSingle(
             Expression<Func<T, bool>> filter = null,

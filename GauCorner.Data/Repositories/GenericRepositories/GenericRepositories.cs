@@ -1,4 +1,5 @@
-﻿using GauCorner.Data.Entities;
+﻿using GauCorner.Data.DTO.ResponseModel.ResultModel;
+using GauCorner.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -64,6 +65,31 @@ namespace GauCorner.Data.Repositories.GenericRepositories
 
             return query.AsNoTracking().AsSplitQuery();
         }
+
+        public async Task<ListDataResultModel<T>> GetPagedList(
+            Expression<Func<T, bool>> filter = null,
+            Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,
+            string includeProperties = "",
+            int pageIndex = 1,
+            int pageSize = 10
+        )
+        {
+            var query = GetQueryable(filter, orderBy, includeProperties);
+
+            int totalItems = await query.CountAsync();
+            int totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+
+            var data = await query.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToListAsync();
+            return new ListDataResultModel<T>
+            {
+                Data = data,
+                TotalItems = totalItems,
+                TotalPages = totalPages,
+                CurrentPage = pageIndex,
+                PageSize = pageSize
+            };
+        }
+
 
         public async Task<IEnumerable<T>> GetList(
             Expression<Func<T, bool>> filter = null,

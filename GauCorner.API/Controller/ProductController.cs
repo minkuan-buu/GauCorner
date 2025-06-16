@@ -25,6 +25,13 @@ namespace GauCorner.API.Controller
             return Ok(result);
         }
 
+        [HttpGet("all/shop/{slug}")]
+        public async Task<IActionResult> GetProducts([FromQuery] PaginationRequest request, string slug)
+        {
+            var result = await _productServices.GetAllProducts(request, slug);
+            return Ok(result);
+        }
+
         [HttpPost]
         [Authorize(AuthenticationSchemes = "GauCornerAuthentication")]
         public async Task<IActionResult> CreateProduct([FromForm] ProductFormWrapper wrapper)
