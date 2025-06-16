@@ -4,7 +4,7 @@ namespace GauCorner.Data.DTO.ResponseModel
 {
     public class DonatePageResModel
     {
-        public string Username { get; set; } = null!;
+        public string UserPath { get; set; } = null!;
         public string Name { get; set; } = null!;
         public string BackgroundUrl { get; set; } = null!;
         public string LogoUrl { get; set; } = null!;

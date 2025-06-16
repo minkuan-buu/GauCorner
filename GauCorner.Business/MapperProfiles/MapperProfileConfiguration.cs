@@ -38,7 +38,7 @@ namespace GauCorner.Business.MapperProfiles
 
             CreateMap<UserAccount, DonatePageResModel>()
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => TextConvert.ConvertFromUnicodeEscape(src.Name)))
-                .ForMember(dest => dest.Username, opt => opt.MapFrom(src => src.Username))
+                .ForMember(dest => dest.UserPath, opt => opt.MapFrom(src => src.Path))
                 .ForMember(dest => dest.BackgroundUrl, opt => opt.MapFrom(src => src.Uiconfigs.FirstOrDefault(x => x.IsUsed).BackgroundUrl))
                 .ForMember(dest => dest.LogoUrl, opt => opt.MapFrom(src => src.Uiconfigs.FirstOrDefault(x => x.IsUsed).LogoUrl))
                 .ForMember(dest => dest.ColorTone, opt => opt.MapFrom(src => src.Uiconfigs.FirstOrDefault(x => x.IsUsed).ColorTone))
