@@ -39,7 +39,7 @@ namespace GauCorner.API.Middleware
             var requestPath = Context.Request.Path;
 
             // Allow the login endpoint to be bypassed
-            if (requestPath.StartsWithSegments("/api/auth/login") || requestPath.StartsWithSegments("/api/auth/register"))
+            if (requestPath.StartsWithSegments("/api/auth/login") || requestPath.StartsWithSegments("/api/auth/register") || requestPath.StartsWithSegments("/api/auth/logout"))
             {
                 return AuthenticateResult.NoResult(); // Cho phép request đi qua mà không xác thực
             }
