@@ -317,7 +317,7 @@ namespace GauCorner.Business.Services.ProductServices
             var pagedData = await _productRepositories.GetPagedList(
                 filter: filter,
                 orderBy: orderBy,
-                includeProperties: "ProductVariants,ProductAttachments,CreatedByNavigation",
+                includeProperties: "ProductVariants,ProductAttachments,CreatedByNavigation,Category",
                 pageIndex: request.Page ?? 1,
                 pageSize: request.PageSize ?? 10
             );
@@ -343,6 +343,7 @@ namespace GauCorner.Business.Services.ProductServices
                 {
                     Id = p.Id,
                     Name = TextConvert.ConvertFromUnicodeEscape(p.Name),
+                    CategoryName = TextConvert.ConvertFromUnicodeEscape(p.Category.Name),
                     Thumbnail = p.ProductAttachments.OrderBy(x => x.Index).FirstOrDefault()?.AttachmentUrl ?? "",
                     Variants = (
                         request.SortBy == "price" && (request.IsDescending ?? false)
