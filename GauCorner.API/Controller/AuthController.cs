@@ -41,7 +41,6 @@ namespace GauCorner.API.Controller
         }
 
         [HttpPost("logout")]
-        [Authorize(AuthenticationSchemes = "GauCornerAuthentication")]
         public async Task<IActionResult> Logout()
         {
             var DeviceId = Request.Cookies["DeviceId"];
