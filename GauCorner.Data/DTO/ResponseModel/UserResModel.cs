@@ -4,6 +4,7 @@ namespace GauCorner.Data.DTO.ResponseModel.UserResModel
     {
         public Guid Id { get; set; }
         public string Name { get; set; } = null!;
+        public string UserPath { get; set; } = null!;
         public string? Attachment { get; set; }
         public string Status { get; set; } = null!;
         public UserAuthResModel Auth { get; set; } = null!;

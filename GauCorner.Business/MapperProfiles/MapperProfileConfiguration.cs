@@ -16,6 +16,7 @@ namespace GauCorner.Business.MapperProfiles
             //Login
             CreateMap<UserAccount, UserLoginResModel>()
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => TextConvert.ConvertFromUnicodeEscape(src.Name)))
+                .ForMember(dest => dest.UserPath, opt => opt.MapFrom(src => src.Path))
                 .ForPath(dest => dest.Auth.DeviceId, opt => opt.MapFrom(_ => Guid.NewGuid()))
                 .ForPath(dest => dest.Auth.RefreshToken, opt => opt.MapFrom(src => Authentication.GenerateRefreshToken()))
                 .ForPath(dest => dest.Auth.Token, opt => opt.MapFrom(src => Authentication.GenerateJWT(src)));
