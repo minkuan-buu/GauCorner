@@ -12,8 +12,7 @@ namespace GauCorner.Data.Repositories.AttributeValueRepositories
 
         public async Task DeleteByProductId(Guid productId)
         {
-            var attributeValues = await Context.AttributeValues
-                .Where(av => av.Variants.Any(v => v.ProductId == productId))
+            var attributeValues = await Context.AttributeValues.Include(x => x.Attribute).Where(av => av.Attribute.ProductId == productId)
                 .ToListAsync();
 
             if (attributeValues != null && attributeValues.Any())
