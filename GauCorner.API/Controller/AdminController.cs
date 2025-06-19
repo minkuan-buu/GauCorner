@@ -20,12 +20,20 @@ namespace GauCorner.API.Controller
 
         [HttpGet("donate/config/list")]
         [Authorize(AuthenticationSchemes = "GauCornerAuthentication")]
-        public async Task<IActionResult> Login([FromBody] UserLoginModel userLoginModel)
+        public async Task<IActionResult> GetDonateConfigList()
         {
             var token = Request.Headers["Authorization"].ToString().Split(" ")[1];
             var result = await _donateServices.GetConfigLabel(token);
             return Ok(result);
         }
 
+        [HttpGet("donate/config/{configId}")]
+        [Authorize(AuthenticationSchemes = "GauCornerAuthentication")]
+        public async Task<IActionResult> GetDonateConfig(Guid configId)
+        {
+            var token = Request.Headers["Authorization"].ToString().Split(" ")[1];
+            var result = await _donateServices.GetConfigById(configId, token);
+            return Ok(result);
+        }
     }
 }

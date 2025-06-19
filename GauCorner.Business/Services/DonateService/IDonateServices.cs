@@ -10,6 +10,7 @@ namespace GauCorner.Business.Services.DonateServices
         Task<ResultModel<DonatePageResModel>> GetDonatePage(string userPath);
         Task<ResultModel<TransactionStatusResModel>> HandleCheckTransaction(string apptransid);
         Task<ResultModel<ListDataResultModel<DonatePageConfigLabel>>> GetConfigLabel(string Token);
+        Task<ResultModel<DataResultModel<DonatePageConfigResModel>>> GetConfigById(Guid configId, string Token);
         // Task<bool> UpdateDonate(DonateModel donateModel);
         // Task<bool> DeleteDonate(int id);
         // Task<DonateModel> GetDonateById(int id);

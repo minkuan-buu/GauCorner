@@ -10,6 +10,7 @@ using GauCorner.Data.DTO.ResponseModel.ResultModel;
 using GauCorner.Data.Entities;
 using GauCorner.Data.Enums.TransactionEnums;
 using GauCorner.Data.Repositories.DonateRepositories;
+using GauCorner.Data.Repositories.UIConfigRepositories;
 using GauCorner.Data.Repositories.UserRepositories;
 using Newtonsoft.Json;
 
@@ -19,6 +20,7 @@ namespace GauCorner.Business.Services.DonateServices
     {
         private readonly IDonateRepositories _donateRepositories;
         private readonly IUserRepositories _userRepositories;
+        private readonly IUIConfigRepositories _uiConfigRepositories;
         private readonly IMapper _mapper;
         private readonly string app_id = Environment.GetEnvironmentVariable("ZPAppId");
         private readonly string key1 = Environment.GetEnvironmentVariable("ZPKey1");
@@ -26,11 +28,13 @@ namespace GauCorner.Business.Services.DonateServices
         private readonly string query_order_url = "https://sb-openapi.zalopay.vn/v2/query";
         private readonly string callback_url = Environment.GetEnvironmentVariable("CALLBACK_URL");
 
-        public DonateServices(IDonateRepositories donateRepositories, IMapper mapper, IUserRepositories userRepositories)
+        public DonateServices(IDonateRepositories donateRepositories, IMapper mapper, IUserRepositories userRepositories,
+            IUIConfigRepositories uiConfigRepositories)
         {
-            _userRepositories = userRepositories;
             _donateRepositories = donateRepositories;
+            _uiConfigRepositories = uiConfigRepositories;
             _mapper = mapper;
+            _userRepositories = userRepositories;
         }
 
         public async Task<ResultModel<MessageResultModel>> CreateDonate(DonateReqModel donateModel, string userPath)
@@ -177,6 +181,30 @@ namespace GauCorner.Business.Services.DonateServices
             {
                 StatusCodes = 200,
                 Response = result
+            };
+        }
+
+        public async Task<ResultModel<DataResultModel<DonatePageConfigResModel>>> GetConfigById(Guid configId, string Token)
+        {
+            var userId = Guid.Parse(Authentication.DecodeToken(Token, "userid"));
+            var getUserAccount = await _userRepositories.GetSingle(x => x.Id == userId);
+            if (getUserAccount == null)
+            {
+                throw new CustomException("Người dùng không tồn tại trong hệ thống!");
+            }
+            var GetConfig = await _uiConfigRepositories.GetSingle(x => x.Id == configId && x.CreatedBy == userId);
+            if (GetConfig == null)
+            {
+                throw new CustomException("Cấu hình không tồn tại trong hệ thống!");
+            }
+            var result = _mapper.Map<DonatePageConfigResModel>(GetConfig);
+            return new ResultModel<DataResultModel<DonatePageConfigResModel>>
+            {
+                StatusCodes = 200,
+                Response = new DataResultModel<DonatePageConfigResModel>
+                {
+                    Data = result
+                }
             };
         }
     }

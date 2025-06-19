@@ -71,6 +71,15 @@ namespace GauCorner.Business.MapperProfiles
             CreateMap<Uiconfig, DonatePageConfigLabel>()
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => TextConvert.ConvertFromUnicodeEscape(src.Name)))
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id));
+
+            CreateMap<Uiconfig, DonatePageConfigResModel>()
+                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => TextConvert.ConvertFromUnicodeEscape(src.Name)))
+                .ForMember(dest => dest.BackgroundUrl, opt => opt.MapFrom(src => src.BackgroundUrl))
+                .ForMember(dest => dest.LogoUrl, opt => opt.MapFrom(src => src.LogoUrl))
+                .ForMember(dest => dest.ColorTone, opt => opt.MapFrom(src => src.ColorTone))
+                .ForMember(dest => dest.Description, opt => opt.MapFrom(src => TextConvert.ConvertFromUnicodeEscape(src.Description)))
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id));
+
         }
     }
 }
