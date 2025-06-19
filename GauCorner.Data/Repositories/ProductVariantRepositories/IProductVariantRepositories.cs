@@ -5,5 +5,6 @@ namespace GauCorner.Data.Repositories.ProductVariantRepositories
 {
     public interface IProductVariantRepositories : IGenericRepositories<ProductVariant>
     {
+        Task DeleteByProductId(Guid productId);
     }
 }

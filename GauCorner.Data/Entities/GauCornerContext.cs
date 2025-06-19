@@ -39,6 +39,8 @@ public partial class GauCornerContext : DbContext
 
     public virtual DbSet<UserToken> UserTokens { get; set; }
 
+    public virtual DbSet<VariantAttributeValue> VariantAttributeValues { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<AttributeValue>(entity =>

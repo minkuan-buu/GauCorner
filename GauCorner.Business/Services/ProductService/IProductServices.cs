@@ -10,5 +10,6 @@ namespace GauCorner.Business.Services.ProductServices
         Task<ResultModel<ListDataResultModel<ProductResModel>>> GetAllProducts(PaginationRequest request, string userPath);
         Task<ResultModel<DataResultModel<ProductDetailDto>>> GetProductDetail(Guid productId, string slug);
         Task<ResultModel<MessageResultModel>> CreateProduct(ProductDto productModel, string Token);
+        Task<ResultModel<MessageResultModel>> UpdateProduct(Guid productId, ProductDto productModel, string Token);
     }
 }

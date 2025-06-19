@@ -5,5 +5,6 @@ namespace GauCorner.Data.Repositories.VariantAttributeValueRepo
 {
     public interface IVariantAttributeValueRepo : IGenericRepositories<VariantAttributeValue>
     {
+        Task DeleteByProductId(Guid productId);
     }
 }

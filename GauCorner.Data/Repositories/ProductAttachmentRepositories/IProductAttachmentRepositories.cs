@@ -5,5 +5,6 @@ namespace GauCorner.Data.Repositories.ProductAttachmentRepositories
 {
     public interface IProductAttachmentRepositories : IGenericRepositories<ProductAttachment>
     {
+        Task DeleteByProductId(Guid productId);
     }
 }
