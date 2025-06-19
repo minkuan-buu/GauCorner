@@ -175,7 +175,7 @@ namespace GauCorner.Business.Services.DonateServices
             {
                 throw new CustomException("Người dùng không tồn tại trong hệ thống!");
             }
-            var donatePageConfigs = _uiConfigRepositories.GetList(x => x.CreatedBy == userId);
+            var donatePageConfigs = await _uiConfigRepositories.GetList(x => x.CreatedBy == userId);
             var result = _mapper.Map<List<DonatePageConfigLabel>>(donatePageConfigs);
             return new ResultModel<ListDataResultModel<DonatePageConfigLabel>>
             {
