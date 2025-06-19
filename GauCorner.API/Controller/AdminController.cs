@@ -19,7 +19,7 @@ namespace GauCorner.API.Controller
         }
 
         [HttpGet("donate/config/list")]
-        [Authorize(AuthenticationSchemes = "GauCornerAuthentication")]
+        // [Authorize(AuthenticationSchemes = "GauCornerAuthentication")]
         public async Task<IActionResult> GetDonateConfigList()
         {
             var token = Request.Headers["Authorization"].ToString().Split(" ")[1];

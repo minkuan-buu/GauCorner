@@ -170,17 +170,20 @@ namespace GauCorner.Business.Services.DonateServices
         public async Task<ResultModel<ListDataResultModel<DonatePageConfigLabel>>> GetConfigLabel(string Token)
         {
             var userId = Guid.Parse(Authentication.DecodeToken(Token, "userid"));
-            var getAllDonates = await _userRepositories.GetList(x => x.Id == userId);
-            if (getAllDonates == null || !getAllDonates.Any())
+            var getUser = await _userRepositories.GetList(x => x.Id == userId);
+            if (getUser == null || !getUser.Any())
             {
                 throw new CustomException("Người dùng không tồn tại trong hệ thống!");
             }
-            var donatePageConfigs = getAllDonates.SelectMany(x => x.Uiconfigs.Where(u => u.IsUsed)).ToList();
-            var result = _mapper.Map<ListDataResultModel<DonatePageConfigLabel>>(donatePageConfigs);
+            var donatePageConfigs = _uiConfigRepositories.GetList(x => x.CreatedBy == userId);
+            var result = _mapper.Map<List<DonatePageConfigLabel>>(donatePageConfigs);
             return new ResultModel<ListDataResultModel<DonatePageConfigLabel>>
             {
                 StatusCodes = 200,
-                Response = result
+                Response = new ListDataResultModel<DonatePageConfigLabel>
+                {
+                    Data = result
+                }
             };
         }
 
