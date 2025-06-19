@@ -12,6 +12,22 @@ namespace GauCorner.Data.DTO.ResponseModel
         public string? Description { get; set; }
     }
 
+    public class DonatePageConfigLabel
+    {
+        public Guid Id { get; set; }
+        public string Name { get; set; } = null!;
+    }
+
+    public class DonatePageConfigResModel
+    {
+        public Guid Id { get; set; }
+        public string Name { get; set; } = null!;
+        public string BackgroundUrl { get; set; } = null!;
+        public string LogoUrl { get; set; } = null!;
+        public string ColorTone { get; set; } = null!;
+        public string? Description { get; set; }
+    }
+
     public class TransactionStatusResModel
     {
         public int ReturnCode { get; set; }

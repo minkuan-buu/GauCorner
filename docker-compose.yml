@@ -1,0 +1,12 @@
+# Please refer https://aka.ms/HTTPSinContainer on how to setup an https developer certificate for your ASP.NET Core service.
+
+services:
+  gaucornerapi:
+    image: gaucornerapi
+    build:
+      context: .
+      dockerfile: GauCorner.API/Dockerfile
+    ports:
+      - 5152:5152
+    env_file:
+      - GauCorner.API/.env
