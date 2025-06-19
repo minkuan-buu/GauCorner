@@ -16,6 +16,7 @@ namespace GauCorner.Data.DTO.ResponseModel
     {
         public Guid Id { get; set; }
         public string Name { get; set; } = null!;
+        public bool IsUsed { get; set; }
     }
 
     public class DonatePageConfigResModel
