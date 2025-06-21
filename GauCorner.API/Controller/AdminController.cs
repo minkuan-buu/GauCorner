@@ -53,8 +53,8 @@ namespace GauCorner.API.Controller
             {
                 background.Add(request.BackgroundImage);
             }
-            var logoUrl = await _imageService.SaveUploadedFiles(logo.ToArray(), "/www/wwwroot/cdn.donate.buubuu.id.vn/uploads/donate", "https://cdn.donate.buubuu.id.vn/uploads/donate", "logo", token);
-            var backgroundUrl = await _imageService.SaveUploadedFiles(background.ToArray(), "/www/wwwroot/cdn.donate.buubuu.id.vn/uploads/donate", "https://cdn.donate.buubuu.id.vn/uploads/donate", "background", token);
+            var logoUrl = await _imageService.SaveUploadedFiles(logo.ToArray(), "/www/wwwroot/cdn.donate.buubuu.id.vn/uploads/donate/page", "https://cdn.donate.buubuu.id.vn/uploads/donate/page", "logo", token);
+            var backgroundUrl = await _imageService.SaveUploadedFiles(background.ToArray(), "/www/wwwroot/cdn.donate.buubuu.id.vn/uploads/donate/page", "https://cdn.donate.buubuu.id.vn/uploads/donate/page", "background", token);
             var requestDto = new ConfigDto
             {
                 Name = request.ConfigName,
@@ -86,8 +86,8 @@ namespace GauCorner.API.Controller
                 {
                     backgroundImages.Add(oldConfigImage.BackgroundUrl);
                 }
-                await _imageService.DeleteImages(logoImages, "/www/wwwroot/cdn.donate.buubuu.id.vn/uploads/donate", "logo", token);
-                await _imageService.DeleteImages(backgroundImages, "/www/wwwroot/cdn.donate.buubuu.id.vn/uploads/donate", "background", token);
+                await _imageService.DeleteImages(logoImages, "/www/wwwroot/cdn.donate.buubuu.id.vn/uploads/donate/page", "logo", token);
+                await _imageService.DeleteImages(backgroundImages, "/www/wwwroot/cdn.donate.buubuu.id.vn/uploads/donate/page", "background", token);
             }
             List<IFormFile> logo = new List<IFormFile>();
             if (request.LogoImage != null && request.LogoImage.Length > 0)
@@ -99,8 +99,8 @@ namespace GauCorner.API.Controller
             {
                 background.Add(request.BackgroundImage);
             }
-            var logoUrl = await _imageService.SaveUploadedFiles(logo.ToArray(), "/www/wwwroot/cdn.donate.buubuu.id.vn/uploads/donate", "https://cdn.donate.buubuu.id.vn/uploads/donate", "logo", token);
-            var backgroundUrl = await _imageService.SaveUploadedFiles(background.ToArray(), "/www/wwwroot/cdn.donate.buubuu.id.vn/uploads/donate", "https://cdn.donate.buubuu.id.vn/uploads/donate", "background", token);
+            var logoUrl = await _imageService.SaveUploadedFiles(logo.ToArray(), "/www/wwwroot/cdn.donate.buubuu.id.vn/uploads/donate", "https://cdn.donate.buubuu.id.vn/uploads/donate/page", "logo", token);
+            var backgroundUrl = await _imageService.SaveUploadedFiles(background.ToArray(), "/www/wwwroot/cdn.donate.buubuu.id.vn/uploads/donate", "https://cdn.donate.buubuu.id.vn/uploads/donate/page", "background", token);
             var requestDto = new ConfigDto
             {
                 Name = request.ConfigName,
