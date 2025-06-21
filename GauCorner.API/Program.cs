@@ -134,6 +134,7 @@ builder.Services.AddScoped<IAttributeValueRepositories, AttributeValueRepositori
 builder.Services.AddScoped<IProductVariantRepositories, ProductVariantRepositories>();
 builder.Services.AddScoped<IVariantAttributeValueRepo, VariantAttributeValueRepo>();
 builder.Services.AddScoped<IProductAttachmentRepositories, ProductAttachmentRepositories>();
+builder.Services.AddScoped<IImageService, ImageService>();
 
 //=========================================== SERVICE =============================================
 builder.Services.AddScoped<IUserServices, UserServices>();

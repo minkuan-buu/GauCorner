@@ -16,10 +16,12 @@ namespace GauCorner.API.Controller
     {
         private readonly IProductServices _productServices;
         private readonly IProductAttachmentServices _productAttachmentServices;
-        public ProductController(IProductServices productServices, IProductAttachmentServices productAttachmentServices)
+        private readonly IImageService _imageService;
+        public ProductController(IProductServices productServices, IProductAttachmentServices productAttachmentServices, IImageService imageService)
         {
-            _productAttachmentServices = productAttachmentServices;
             _productServices = productServices;
+            _productAttachmentServices = productAttachmentServices;
+            _imageService = imageService;
         }
 
         [HttpGet("{productId}/shop/{slug}")]
@@ -51,24 +53,25 @@ namespace GauCorner.API.Controller
             var savedOptionImages = new List<string>();
             if (wrapper.AttributeImage != null || wrapper.AttributeImage?.Length != 0)
             {
-                for (int i = 0; i < wrapper.AttributeImage?.Length; i++)
-                {
-                    var file = wrapper.AttributeImage[i];
-                    var fileName = $"{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
-                    var path = Path.Combine("/www/wwwroot/cdn.donate.buubuu.id.vn/uploads/shop/attributes", fileName);
+                savedOptionImages = await _imageService.SaveUploadedFiles(wrapper.AttributeImage!, "/www/wwwroot/cdn.donate.buubuu.id.vn/uploads/shop", "https://cdn.donate.buubuu.id.vn/uploads/shop", "attributes", token);
+                // for (int i = 0; i < wrapper.AttributeImage?.Length; i++)
+                // {
+                //     var file = wrapper.AttributeImage[i];
+                //     var fileName = $"{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
+                //     var path = Path.Combine("/www/wwwroot/cdn.donate.buubuu.id.vn/uploads/shop/attributes", fileName);
 
-                    // Tạo thư mục nếu chưa tồn tại
-                    var folder = Path.GetDirectoryName(path);
-                    if (!Directory.Exists(folder))
-                    {
-                        Directory.CreateDirectory(folder);
-                    }
+                //     // Tạo thư mục nếu chưa tồn tại
+                //     var folder = Path.GetDirectoryName(path);
+                //     if (!Directory.Exists(folder))
+                //     {
+                //         Directory.CreateDirectory(folder);
+                //     }
 
-                    await using var stream = new FileStream(path, FileMode.Create);
-                    await file.CopyToAsync(stream);
+                //     await using var stream = new FileStream(path, FileMode.Create);
+                //     await file.CopyToAsync(stream);
 
-                    savedOptionImages.Add($"https://cdn.donate.buubuu.id.vn/uploads/shop/attributes/{fileName}");
-                }
+                //     savedOptionImages.Add($"https://cdn.donate.buubuu.id.vn/uploads/shop/attributes/{fileName}");
+                // }
             }
             // Gán lại image URL vào Option tương ứng (cho parent attribute)
             var parentAttr = productDto.Attribute.FirstOrDefault(a => a.isParent);
@@ -84,23 +87,24 @@ namespace GauCorner.API.Controller
             var savedProductImages = new List<string>();
             if (wrapper.ProductImage != null && wrapper.ProductImage.Length > 0)
             {
-                foreach (var file in wrapper.ProductImage)
-                {
-                    var fileName = $"{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
-                    var path = Path.Combine("/www/wwwroot/cdn.donate.buubuu.id.vn/uploads/shop/products/", fileName);
+                savedProductImages = await _imageService.SaveUploadedFiles(wrapper.ProductImage, "/www/wwwroot/cdn.donate.buubuu.id.vn/uploads/shop", "https://cdn.donate.buubuu.id.vn/uploads/shop", "products", token);
+                // foreach (var file in wrapper.ProductImage)
+                // {
+                //     var fileName = $"{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
+                //     var path = Path.Combine("/www/wwwroot/cdn.donate.buubuu.id.vn/uploads/shop/products/", fileName);
 
-                    // Tạo thư mục nếu chưa tồn tại
-                    var folder = Path.GetDirectoryName(path);
-                    if (!Directory.Exists(folder))
-                    {
-                        Directory.CreateDirectory(folder);
-                    }
+                //     // Tạo thư mục nếu chưa tồn tại
+                //     var folder = Path.GetDirectoryName(path);
+                //     if (!Directory.Exists(folder))
+                //     {
+                //         Directory.CreateDirectory(folder);
+                //     }
 
-                    await using var stream = new FileStream(path, FileMode.Create);
-                    await file.CopyToAsync(stream);
+                //     await using var stream = new FileStream(path, FileMode.Create);
+                //     await file.CopyToAsync(stream);
 
-                    savedProductImages.Add($"https://cdn.donate.buubuu.id.vn/uploads/shop/products/{fileName}");
-                }
+                //     savedProductImages.Add($"https://cdn.donate.buubuu.id.vn/uploads/shop/products/{fileName}");
+                // }
             }
 
             // Gán danh sách ảnh sản phẩm vào ProductDto (giả sử có thuộc tính Images)
@@ -111,13 +115,13 @@ namespace GauCorner.API.Controller
         }
 
         [HttpPut("{id}")]
-        // [Authorize(AuthenticationSchemes = "GauCornerAuthentication")]
+        [Authorize(AuthenticationSchemes = "GauCornerAuthentication")]
         public async Task<IActionResult> UpdateProduct(Guid id, [FromForm] ProductFormWrapper wrapper)
         {
-            var getAttachment = await _productAttachmentServices.GetProductAttachmentById(id);
-            DeleteFiles(getAttachment.AttributeImages, "/www/wwwroot/cdn.donate.buubuu.id.vn/uploads/shop/attributes");
-            DeleteFiles(getAttachment.ProductImages, "/www/wwwroot/cdn.donate.buubuu.id.vn/uploads/shop/products/");
             var token = Request.Headers["Authorization"].ToString().Split(" ")[1];
+            var getAttachment = await _productAttachmentServices.GetProductAttachmentById(id);
+            await _imageService.DeleteImages(getAttachment.AttributeImages, "/www/wwwroot/cdn.donate.buubuu.id.vn/uploads/shop", "attributes", token);
+            await _imageService.DeleteImages(getAttachment.ProductImages, "/www/wwwroot/cdn.donate.buubuu.id.vn/uploads/shop", "products", token);
 
             var productDto = JsonSerializer.Deserialize<ProductDto>(wrapper.Product, new JsonSerializerOptions
             {
@@ -128,20 +132,21 @@ namespace GauCorner.API.Controller
             var savedOptionImages = new List<string>();
             if (wrapper.AttributeImage != null && wrapper.AttributeImage.Length > 0)
             {
-                for (int i = 0; i < wrapper.AttributeImage.Length; i++)
-                {
-                    var file = wrapper.AttributeImage[i];
-                    var fileName = $"{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
-                    var path = Path.Combine("/www/wwwroot/cdn.donate.buubuu.id.vn/uploads/shop/attributes", fileName);
+                savedOptionImages = await _imageService.SaveUploadedFiles(wrapper.AttributeImage, "/www/wwwroot/cdn.donate.buubuu.id.vn/uploads/shop", "https://cdn.donate.buubuu.id.vn/uploads/shop", "attributes", token);
+                // for (int i = 0; i < wrapper.AttributeImage.Length; i++)
+                // {
+                //     var file = wrapper.AttributeImage[i];
+                //     var fileName = $"{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
+                //     var path = Path.Combine("/www/wwwroot/cdn.donate.buubuu.id.vn/uploads/shop/attributes", fileName);
 
-                    var folder = Path.GetDirectoryName(path);
-                    if (!Directory.Exists(folder)) Directory.CreateDirectory(folder);
+                //     var folder = Path.GetDirectoryName(path);
+                //     if (!Directory.Exists(folder)) Directory.CreateDirectory(folder);
 
-                    await using var stream = new FileStream(path, FileMode.Create);
-                    await file.CopyToAsync(stream);
+                //     await using var stream = new FileStream(path, FileMode.Create);
+                //     await file.CopyToAsync(stream);
 
-                    savedOptionImages.Add($"https://cdn.donate.buubuu.id.vn/uploads/shop/attributes/{fileName}");
-                }
+                //     savedOptionImages.Add($"https://cdn.donate.buubuu.id.vn/uploads/shop/attributes/{fileName}");
+                // }
 
                 var parentAttr = productDto.Attribute.FirstOrDefault(a => a.isParent);
                 if (parentAttr != null && savedOptionImages.Count > 0)
@@ -157,19 +162,20 @@ namespace GauCorner.API.Controller
             var savedProductImages = new List<string>();
             if (wrapper.ProductImage != null && wrapper.ProductImage.Length > 0)
             {
-                foreach (var file in wrapper.ProductImage)
-                {
-                    var fileName = $"{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
-                    var path = Path.Combine("/www/wwwroot/cdn.donate.buubuu.id.vn/uploads/shop/products/", fileName);
+                savedProductImages = await _imageService.SaveUploadedFiles(wrapper.ProductImage, "/www/wwwroot/cdn.donate.buubuu.id.vn/uploads/shop", "https://cdn.donate.buubuu.id.vn/uploads/shop", "products", token);
+                // foreach (var file in wrapper.ProductImage)
+                // {
+                //     var fileName = $"{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
+                //     var path = Path.Combine("/www/wwwroot/cdn.donate.buubuu.id.vn/uploads/shop/products/", fileName);
 
-                    var folder = Path.GetDirectoryName(path);
-                    if (!Directory.Exists(folder)) Directory.CreateDirectory(folder);
+                //     var folder = Path.GetDirectoryName(path);
+                //     if (!Directory.Exists(folder)) Directory.CreateDirectory(folder);
 
-                    await using var stream = new FileStream(path, FileMode.Create);
-                    await file.CopyToAsync(stream);
+                //     await using var stream = new FileStream(path, FileMode.Create);
+                //     await file.CopyToAsync(stream);
 
-                    savedProductImages.Add($"https://cdn.donate.buubuu.id.vn/uploads/shop/products/{fileName}");
-                }
+                //     savedProductImages.Add($"https://cdn.donate.buubuu.id.vn/uploads/shop/products/{fileName}");
+                // }
 
                 // Gán ảnh mới nếu có
                 productDto.ProductImage = savedProductImages;
@@ -178,20 +184,6 @@ namespace GauCorner.API.Controller
             // Nếu không có ảnh upload mới -> vẫn giữ ảnh cũ
             var result = await _productServices.UpdateProduct(id, productDto, token);
             return Ok(result);
-        }
-
-        private void DeleteFiles(List<string> imageUrls, string localFolderPath)
-        {
-            foreach (var url in imageUrls)
-            {
-                var fileName = Path.GetFileName(new Uri(url).LocalPath);
-                var filePath = Path.Combine(localFolderPath, fileName);
-
-                if (System.IO.File.Exists(filePath))
-                {
-                    System.IO.File.Delete(filePath);
-                }
-            }
         }
     }
 }

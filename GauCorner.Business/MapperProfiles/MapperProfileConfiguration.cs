@@ -80,7 +80,13 @@ namespace GauCorner.Business.MapperProfiles
                 .ForMember(dest => dest.ColorTone, opt => opt.MapFrom(src => src.ColorTone))
                 .ForMember(dest => dest.Description, opt => opt.MapFrom(src => TextConvert.ConvertFromUnicodeEscape(src.Description)))
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id));
-
+            CreateMap<ConfigDto, Uiconfig>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => Guid.NewGuid()))
+                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => TextConvert.ConvertToUnicodeEscape(src.Name)))
+                .ForMember(dest => dest.BackgroundUrl, opt => opt.MapFrom(src => src.BackgroundImage))
+                .ForMember(dest => dest.LogoUrl, opt => opt.MapFrom(src => src.LogoImage))
+                .ForMember(dest => dest.ColorTone, opt => opt.MapFrom(src => src.ColorTone))
+                .ForMember(dest => dest.Description, opt => opt.MapFrom(src => TextConvert.ConvertToUnicodeEscape(src.Description)));
         }
     }
 }

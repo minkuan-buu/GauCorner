@@ -36,4 +36,10 @@ namespace GauCorner.Data.DTO.ResponseModel
         public decimal Amount { get; set; }
         public bool isProcessing { get; set; }
     }
+
+    public class ConfigImage
+    {
+        public string BackgroundUrl { get; set; } = null!;
+        public string LogoUrl { get; set; } = null!;
+    }
 }

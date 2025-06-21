@@ -210,5 +210,91 @@ namespace GauCorner.Business.Services.DonateServices
                 }
             };
         }
+
+        public async Task<ResultModel<MessageResultModel>> CreateConfig(ConfigDto request, string Token)
+        {
+            var userId = Guid.Parse(Authentication.DecodeToken(Token, "userid"));
+            var getUserAccount = await _userRepositories.GetSingle(x => x.Id == userId);
+            if (getUserAccount == null)
+            {
+                throw new CustomException("Người dùng không tồn tại trong hệ thống!");
+            }
+            var existingConfig = await _uiConfigRepositories.GetSingle(x => x.CreatedBy == userId, orderBy: x => x.OrderByDescending(y => y.Index));
+            var newConfig = _mapper.Map<Uiconfig>(request);
+            newConfig.CreatedBy = userId;
+            newConfig.IsUsed = false;
+            if (existingConfig != null)
+            {
+                newConfig.Index = existingConfig.Index + 1;
+            }
+            else
+            {
+                newConfig.Index = 1;
+            }
+            await _uiConfigRepositories.Insert(newConfig);
+            return new ResultModel<MessageResultModel>
+            {
+                StatusCodes = 200,
+                Response = new MessageResultModel
+                {
+                    Message = "Tạo cấu hình thành công!"
+                }
+            };
+        }
+
+        public async Task<ResultModel<MessageResultModel>> UpdateConfig(Guid id, ConfigDto request, string Token)
+        {
+            var userId = Guid.Parse(Authentication.DecodeToken(Token, "userid"));
+            var getUserAccount = await _userRepositories.GetSingle(x => x.Id == userId);
+            if (getUserAccount == null)
+            {
+                throw new CustomException("Người dùng không tồn tại trong hệ thống!");
+            }
+            var GetConfig = await _uiConfigRepositories.GetSingle(x => x.Id == id && x.CreatedBy == userId);
+            if (GetConfig == null)
+            {
+                throw new CustomException("Cấu hình không tồn tại trong hệ thống!");
+            }
+            GetConfig.Name = request.Name;
+            GetConfig.Description = request.Description;
+            GetConfig.ColorTone = request.ColorTone;
+            if (!string.IsNullOrEmpty(request.LogoImage))
+            {
+                GetConfig.LogoUrl = request.LogoImage;
+            }
+            if (!string.IsNullOrEmpty(request.BackgroundImage))
+            {
+                GetConfig.BackgroundUrl = request.BackgroundImage;
+            }
+            await _uiConfigRepositories.Update(GetConfig);
+            return new ResultModel<MessageResultModel>
+            {
+                StatusCodes = 200,
+                Response = new MessageResultModel
+                {
+                    Message = "Cập nhật cấu hình thành công!"
+                }
+            };
+        }
+
+        public async Task<ConfigImage> GetConfigImage(Guid configId, string Token)
+        {
+            var userId = Guid.Parse(Authentication.DecodeToken(Token, "userid"));
+            var getUserAccount = await _userRepositories.GetSingle(x => x.Id == userId);
+            if (getUserAccount == null)
+            {
+                throw new CustomException("Người dùng không tồn tại trong hệ thống!");
+            }
+            var GetConfig = await _uiConfigRepositories.GetSingle(x => x.Id == configId && x.CreatedBy == userId);
+            if (GetConfig == null)
+            {
+                throw new CustomException("Cấu hình không tồn tại trong hệ thống!");
+            }
+            return new ConfigImage
+            {
+                BackgroundUrl = GetConfig.BackgroundUrl,
+                LogoUrl = GetConfig.LogoUrl,
+            };
+        }
     }
 }
