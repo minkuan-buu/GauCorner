@@ -5,7 +5,7 @@ public class ImageService : IImageService
 {
     public Task DeleteImages(List<string> imageUrls, string folderPath, string subFolder, string token)
     {
-        var userId = Authentication.DecodeToken(token, "userId");
+        var userId = Authentication.DecodeToken(token, "userid");
         foreach (var url in imageUrls)
         {
             var fileName = Path.GetFileName(new Uri(url).LocalPath);
@@ -21,7 +21,7 @@ public class ImageService : IImageService
 
     public async Task<List<string>> SaveUploadedFiles(IFormFile[] files, string folderPath, string urlPrefix, string subFolder, string token)
     {
-        var userId = Authentication.DecodeToken(token, "userId");
+        var userId = Authentication.DecodeToken(token, "userid");
 
         // Cấu hình folder động: /uploads/shop/products/{userId}
         var userFolderPath = Path.Combine(folderPath, userId, subFolder);
