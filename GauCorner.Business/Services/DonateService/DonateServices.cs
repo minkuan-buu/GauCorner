@@ -313,11 +313,16 @@ namespace GauCorner.Business.Services.DonateServices
             var allConfigs = await _uiConfigRepositories.GetList(x => x.CreatedBy == userId);
             foreach (var config in allConfigs)
             {
-                config.IsUsed = false;
+                if (config.Id != id)
+                {
+                    config.IsUsed = false;
+                }
+                else
+                {
+                    config.IsUsed = true;
+                }
             }
             await _uiConfigRepositories.UpdateRange(allConfigs.ToList());
-            GetConfig.IsUsed = true;
-            await _uiConfigRepositories.Update(GetConfig);
             return new ResultModel<MessageResultModel>
             {
                 StatusCodes = 200,
