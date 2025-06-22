@@ -296,5 +296,36 @@ namespace GauCorner.Business.Services.DonateServices
                 LogoUrl = GetConfig.LogoUrl,
             };
         }
+
+        public async Task<ResultModel<MessageResultModel>> ChooseConfig(Guid id, string Token)
+        {
+            var userId = Guid.Parse(Authentication.DecodeToken(Token, "userid"));
+            var getUserAccount = await _userRepositories.GetSingle(x => x.Id == userId);
+            if (getUserAccount == null)
+            {
+                throw new CustomException("Người dùng không tồn tại trong hệ thống!");
+            }
+            var GetConfig = await _uiConfigRepositories.GetSingle(x => x.Id == id && x.CreatedBy == userId);
+            if (GetConfig == null)
+            {
+                throw new CustomException("Cấu hình không tồn tại trong hệ thống!");
+            }
+            var allConfigs = await _uiConfigRepositories.GetList(x => x.CreatedBy == userId);
+            foreach (var config in allConfigs)
+            {
+                config.IsUsed = false;
+            }
+            await _uiConfigRepositories.UpdateRange(allConfigs.ToList());
+            GetConfig.IsUsed = true;
+            await _uiConfigRepositories.Update(GetConfig);
+            return new ResultModel<MessageResultModel>
+            {
+                StatusCodes = 200,
+                Response = new MessageResultModel
+                {
+                    Message = "Chọn cấu hình thành công!"
+                }
+            };
+        }
     }
 }

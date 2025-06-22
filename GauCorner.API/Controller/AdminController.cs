@@ -112,5 +112,14 @@ namespace GauCorner.API.Controller
             var result = await _donateServices.UpdateConfig(configId, requestDto, token);
             return Ok(result);
         }
+
+        [HttpPost("donate/config/choose/{configId}")]
+        [Authorize(AuthenticationSchemes = "GauCornerAuthentication")]
+        public async Task<IActionResult> ChooseDonateConfig(Guid configId)
+        {
+            var token = Request.Headers["Authorization"].ToString().Split(" ")[1];
+            var result = await _donateServices.ChooseConfig(configId, token);
+            return Ok(result);
+        }
     }
 }

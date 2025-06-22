@@ -14,6 +14,7 @@ namespace GauCorner.Business.Services.DonateServices
         Task<ResultModel<MessageResultModel>> CreateConfig(ConfigDto request, string Token);
         Task<ResultModel<MessageResultModel>> UpdateConfig(Guid id, ConfigDto request, string Token);
         Task<ConfigImage> GetConfigImage(Guid configId, string Token);
+        Task<ResultModel<MessageResultModel>> ChooseConfig(Guid id, string Token);
         // Task<bool> UpdateDonate(DonateModel donateModel);
         // Task<bool> DeleteDonate(int id);
         // Task<DonateModel> GetDonateById(int id);
