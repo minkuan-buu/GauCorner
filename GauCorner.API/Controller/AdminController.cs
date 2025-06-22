@@ -99,8 +99,8 @@ namespace GauCorner.API.Controller
             {
                 background.Add(request.BackgroundImage);
             }
-            var logoUrl = await _imageService.SaveUploadedFiles(logo.ToArray(), "/www/wwwroot/cdn.donate.buubuu.id.vn/uploads/donate", "https://cdn.donate.buubuu.id.vn/uploads/donate/page", "logo", token);
-            var backgroundUrl = await _imageService.SaveUploadedFiles(background.ToArray(), "/www/wwwroot/cdn.donate.buubuu.id.vn/uploads/donate", "https://cdn.donate.buubuu.id.vn/uploads/donate/page", "background", token);
+            var logoUrl = await _imageService.SaveUploadedFiles(logo.ToArray(), "/www/wwwroot/cdn.donate.buubuu.id.vn/uploads/donate/page", "https://cdn.donate.buubuu.id.vn/uploads/donate/page", "logo", token);
+            var backgroundUrl = await _imageService.SaveUploadedFiles(background.ToArray(), "/www/wwwroot/cdn.donate.buubuu.id.vn/uploads/donate/page", "https://cdn.donate.buubuu.id.vn/uploads/donate/page", "background", token);
             var requestDto = new ConfigDto
             {
                 Name = request.ConfigName,
