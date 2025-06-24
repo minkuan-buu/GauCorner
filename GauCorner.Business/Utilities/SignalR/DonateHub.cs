@@ -7,8 +7,8 @@ public class DonateHub : Hub
         await Groups.AddToGroupAsync(Context.ConnectionId, userId.ToString());
     }
 
-    public async Task SendDonateNotification(Guid userId, string message)
+    public async Task SendDonateNotification(Guid userId, DonateNotification data)
     {
-        await Clients.Group(userId.ToString()).SendAsync("ReceiveDonateNotification", new { message });
+        await Clients.Group(userId.ToString()).SendAsync("ReceiveDonateNotification", data);
     }
 }
