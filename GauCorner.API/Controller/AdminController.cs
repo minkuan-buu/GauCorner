@@ -125,7 +125,7 @@ namespace GauCorner.API.Controller
             return Ok(result);
         }
 
-        [HttpPost("stream/config/")]
+        [HttpGet("stream/config/")]
         [Authorize(AuthenticationSchemes = "GauCornerAuthentication")]
         public async Task<IActionResult> GetStreamConfig()
         {
