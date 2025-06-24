@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using GauCorner.Business.Services.DonateServices;
+using GauCorner.Business.Services.StreamConfigServices;
 
 namespace GauCorner.API.Controller
 {
@@ -14,10 +15,12 @@ namespace GauCorner.API.Controller
     {
         private readonly IDonateServices _donateServices;
         private readonly IImageService _imageService;
-        public AdminController(IDonateServices donateServices, IImageService imageService)
+        private readonly IStreamConfigServices _streamConfigServices;
+        public AdminController(IDonateServices donateServices, IImageService imageService, IStreamConfigServices streamConfigServices)
         {
             _donateServices = donateServices;
             _imageService = imageService;
+            _streamConfigServices = streamConfigServices;
         }
 
         [HttpGet("donate/config/list")]
@@ -119,6 +122,15 @@ namespace GauCorner.API.Controller
         {
             var token = Request.Headers["Authorization"].ToString().Split(" ")[1];
             var result = await _donateServices.ChooseConfig(configId, token);
+            return Ok(result);
+        }
+
+        [HttpPost("stream/config/")]
+        [Authorize(AuthenticationSchemes = "GauCornerAuthentication")]
+        public async Task<IActionResult> GetStreamConfig()
+        {
+            var token = Request.Headers["Authorization"].ToString().Split(" ")[1];
+            var result = await _streamConfigServices.GetStreamConfig(token);
             return Ok(result);
         }
     }

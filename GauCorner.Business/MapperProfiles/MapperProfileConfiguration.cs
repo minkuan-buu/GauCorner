@@ -87,6 +87,13 @@ namespace GauCorner.Business.MapperProfiles
                 .ForMember(dest => dest.LogoUrl, opt => opt.MapFrom(src => src.LogoImage))
                 .ForMember(dest => dest.ColorTone, opt => opt.MapFrom(src => src.ColorTone))
                 .ForMember(dest => dest.Description, opt => opt.MapFrom(src => TextConvert.ConvertToUnicodeEscape(src.Description)));
+
+            CreateMap<StreamConfig, StreamConfigResModel>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.TypeId, opt => opt.MapFrom(src => src.StreamConfigTypeId))
+                .ForMember(dest => dest.TypeName, opt => opt.MapFrom(src => TextConvert.ConvertFromUnicodeEscape(src.StreamConfigType.Name)))
+                .ForMember(dest => dest.AlternativeName, opt => opt.MapFrom(src => TextConvert.ConvertFromUnicodeEscape(src.StreamConfigType.AlternativeName)))
+                .ForMember(dest => dest.Value, opt => opt.MapFrom(src => TextConvert.ConvertFromUnicodeEscape(src.Value)));
         }
     }
 }
