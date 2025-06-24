@@ -180,4 +180,6 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+app.MapHub<DonateHub>("/streamhub");
+
 app.Run();
