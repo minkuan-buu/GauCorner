@@ -6,3 +6,10 @@ public class ConfigWrapper
     public IFormFile LogoImage { get; set; } // Optional files associated with the configuration
     public IFormFile BackgroundImage { get; set; } // Required files for the configuration labels
 }
+
+public class StreamConfigWrapper
+{
+    public string JsonData { get; set; } = null!; // Text color for the stream configuration
+    public IFormFile Gif { get; set; } // Optional GIF image for the stream configuration
+    public IFormFile SoundEffect { get; set; } // Optional sound effect for the stream configuration
+}

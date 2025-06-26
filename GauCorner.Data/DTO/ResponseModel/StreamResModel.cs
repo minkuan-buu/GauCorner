@@ -6,3 +6,9 @@ public class StreamConfigResModel
     public string AlternativeName { get; set; } = null!;
     public string Value { get; set; } = null!;
 }
+
+public class StreamAttachmentResModel
+{
+    public string Gif { get; set; } = null!;
+    public string SoundEffect { get; set; } = null!;
+}

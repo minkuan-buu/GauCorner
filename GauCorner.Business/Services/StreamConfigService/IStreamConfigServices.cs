@@ -8,5 +8,7 @@ namespace GauCorner.Business.Services.StreamConfigServices
     {
         // Define your methods here
         Task<ResultModel<ListDataResultModel<StreamConfigResModel>>> GetStreamConfig(string token);
+        Task<StreamAttachmentResModel> GetStreamAttachment(string token);
+        Task<ResultModel<MessageResultModel>> SaveStreamConfig(List<StreamConfigDto> streamConfigDtos, string token);
     }
 }

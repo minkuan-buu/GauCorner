@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using GauCorner.Business.Services.DonateServices;
 using GauCorner.Business.Services.StreamConfigServices;
+using System.Text.Json;
+using GauCorner.Data.Enums.StreamConfigEnums;
 
 namespace GauCorner.API.Controller
 {
@@ -72,7 +74,7 @@ namespace GauCorner.API.Controller
 
         [HttpPut("donate/config/{configId}")]
         [Authorize(AuthenticationSchemes = "GauCornerAuthentication")]
-        public async Task<IActionResult> CreateDonateConfig(Guid configId, [FromForm] ConfigWrapper request)
+        public async Task<IActionResult> UpdateDonateConfig(Guid configId, [FromForm] ConfigWrapper request)
         {
             var token = Request.Headers["Authorization"].ToString().Split(" ")[1];
             // Xử lý xóa ảnh cũ nếu có
@@ -131,6 +133,71 @@ namespace GauCorner.API.Controller
         {
             var token = Request.Headers["Authorization"].ToString().Split(" ")[1];
             var result = await _streamConfigServices.GetStreamConfig(token);
+            return Ok(result);
+        }
+
+        [HttpPost("stream/config")]
+        [Authorize(AuthenticationSchemes = "GauCornerAuthentication")]
+        [HttpPost]
+        public async Task<IActionResult> UpdateStreamConfig([FromForm] StreamConfigWrapper request)
+        {
+            var token = Request.Headers["Authorization"].ToString().Split(" ")[1];
+
+            // Deserialize JsonData thành List<StreamConfigDto>
+            var configList = JsonSerializer.Deserialize<List<StreamConfigDto>>(request.JsonData, new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            }) ?? new();
+
+            // Xoá file cũ nếu có
+            var oldAttachment = await _streamConfigServices.GetStreamAttachment(token);
+            if (oldAttachment != null)
+            {
+                var gifList = !string.IsNullOrEmpty(oldAttachment.Gif) ? new List<string> { oldAttachment.Gif } : new();
+                var soundList = !string.IsNullOrEmpty(oldAttachment.SoundEffect) ? new List<string> { oldAttachment.SoundEffect } : new();
+
+                await _imageService.DeleteImages(gifList, "/www/wwwroot/cdn.stream.buubuu.id.vn/uploads/stream/config", "gif", token);
+                await _imageService.DeleteImages(soundList, "/www/wwwroot/cdn.stream.buubuu.id.vn/uploads/stream/config", "soundeffect", token);
+            }
+
+            // Upload mới nếu có
+            var gifUrl = string.Empty;
+            if (request.Gif is { Length: > 0 })
+            {
+                var urls = await _imageService.SaveUploadedFiles(
+                    new[] { request.Gif },
+                    "/www/wwwroot/cdn.stream.buubuu.id.vn/uploads/stream/config",
+                    "https://cdn.stream.buubuu.id.vn/uploads/stream/config",
+                    "gif", token);
+                gifUrl = urls.FirstOrDefault() ?? "";
+            }
+
+            var soundEffectUrl = string.Empty;
+            if (request.SoundEffect is { Length: > 0 })
+            {
+                var urls = await _imageService.SaveUploadedFiles(
+                    new[] { request.SoundEffect },
+                    "/www/wwwroot/cdn.stream.buubuu.id.vn/uploads/stream/config",
+                    "https://cdn.stream.buubuu.id.vn/uploads/stream/config",
+                    "soundeffect", token);
+                soundEffectUrl = urls.FirstOrDefault() ?? "";
+            }
+
+            // Cập nhật giá trị mới trong list config
+            if (!string.IsNullOrEmpty(gifUrl))
+            {
+                var gifSetting = configList.FirstOrDefault(x => x.AlternativeName == StreamConfigTypeEnums.Gif.ToString());
+                if (gifSetting != null) gifSetting.Value = gifUrl;
+            }
+
+            if (!string.IsNullOrEmpty(soundEffectUrl))
+            {
+                var soundSetting = configList.FirstOrDefault(x => x.AlternativeName == StreamConfigTypeEnums.SoundEffect.ToString());
+                if (soundSetting != null) soundSetting.Value = soundEffectUrl;
+            }
+
+            // Gọi service lưu cấu hình
+            var result = await _streamConfigServices.SaveStreamConfig(configList, token);
             return Ok(result);
         }
     }
