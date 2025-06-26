@@ -8,6 +8,7 @@ using GauCorner.Business.Services.DonateServices;
 using GauCorner.Business.Services.StreamConfigServices;
 using System.Text.Json;
 using GauCorner.Data.Enums.StreamConfigEnums;
+using System.Web;
 
 namespace GauCorner.API.Controller
 {
@@ -18,11 +19,13 @@ namespace GauCorner.API.Controller
         private readonly IDonateServices _donateServices;
         private readonly IImageService _imageService;
         private readonly IStreamConfigServices _streamConfigServices;
-        public AdminController(IDonateServices donateServices, IImageService imageService, IStreamConfigServices streamConfigServices)
+        private readonly HttpClient _httpClient;
+        public AdminController(IDonateServices donateServices, IImageService imageService, IStreamConfigServices streamConfigServices, IHttpClientFactory httpClientFactory)
         {
             _donateServices = donateServices;
             _imageService = imageService;
             _streamConfigServices = streamConfigServices;
+            _httpClient = httpClientFactory.CreateClient();
         }
 
         [HttpGet("donate/config/list")]
@@ -199,6 +202,33 @@ namespace GauCorner.API.Controller
             // Gọi service lưu cấu hình
             var result = await _streamConfigServices.SaveStreamConfig(configList, token);
             return Ok(result);
+        }
+
+        [HttpGet("tts/speak")]
+        public async Task<IActionResult> Speak([FromQuery] string text)
+        {
+            if (string.IsNullOrWhiteSpace(text))
+                return BadRequest("Text required");
+
+            var encodedText = HttpUtility.UrlEncode(text);
+            var url = $"https://translate.google.com/translate_tts?ie=UTF-8&q={encodedText}&tl=vi&client=tw-ob";
+
+            var request = new HttpRequestMessage(HttpMethod.Get, url);
+            request.Headers.UserAgent.ParseAdd("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/90 Safari/537.36");
+
+            try
+            {
+                var response = await _httpClient.SendAsync(request);
+                if (!response.IsSuccessStatusCode)
+                    return StatusCode((int)response.StatusCode, "Lỗi khi tải TTS");
+
+                var content = await response.Content.ReadAsByteArrayAsync();
+                return File(content, "audio/mpeg");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Lỗi khi tải TTS: " + ex.Message);
+            }
         }
     }
 }
