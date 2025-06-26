@@ -156,8 +156,8 @@ namespace GauCorner.API.Controller
                 var gifList = !string.IsNullOrEmpty(oldAttachment.Gif) ? new List<string> { oldAttachment.Gif } : new();
                 var soundList = !string.IsNullOrEmpty(oldAttachment.SoundEffect) ? new List<string> { oldAttachment.SoundEffect } : new();
 
-                await _imageService.DeleteImages(gifList, "/www/wwwroot/cdn.stream.buubuu.id.vn/uploads/stream/config", "gif", token);
-                await _imageService.DeleteImages(soundList, "/www/wwwroot/cdn.stream.buubuu.id.vn/uploads/stream/config", "soundeffect", token);
+                await _imageService.DeleteImages(gifList, "/www/wwwroot/cdn.donate.buubuu.id.vn/uploads/stream/config", "gif", token);
+                await _imageService.DeleteImages(soundList, "/www/wwwroot/cdn.donate.buubuu.id.vn/uploads/stream/config", "soundeffect", token);
             }
 
             // Upload mới nếu có
