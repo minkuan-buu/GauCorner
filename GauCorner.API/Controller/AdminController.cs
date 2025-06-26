@@ -167,7 +167,7 @@ namespace GauCorner.API.Controller
                 var urls = await _imageService.SaveUploadedFiles(
                     new[] { request.Gif },
                     "/www/wwwroot/cdn.donate.buubuu.id.vn/uploads/stream/config",
-                    "https://cdn.stream.buubuu.id.vn/uploads/stream/config",
+                    "https://cdn.donate.buubuu.id.vn/uploads/stream/config",
                     "gif", token);
                 gifUrl = urls.FirstOrDefault() ?? "";
             }
@@ -178,7 +178,7 @@ namespace GauCorner.API.Controller
                 var urls = await _imageService.SaveUploadedFiles(
                     new[] { request.SoundEffect },
                     "/www/wwwroot/cdn.donate.buubuu.id.vn/uploads/stream/config",
-                    "https://cdn.stream.buubuu.id.vn/uploads/stream/config",
+                    "https://cdn.donate.buubuu.id.vn/uploads/stream/config",
                     "soundeffect", token);
                 soundEffectUrl = urls.FirstOrDefault() ?? "";
             }
