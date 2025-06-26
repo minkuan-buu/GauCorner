@@ -79,7 +79,7 @@ namespace GauCorner.Business.Services.StreamConfigServices
                 StatusCodes = (int)HttpStatusCode.OK,
                 Response = new MessageResultModel
                 {
-                    Message = "Stream configuration updated successfully."
+                    Message = "Cập nhật cấu hình stream thành công.",
                 }
             };
         }
