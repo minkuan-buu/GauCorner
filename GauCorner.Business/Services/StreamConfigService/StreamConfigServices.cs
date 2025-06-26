@@ -1,6 +1,7 @@
 using System.Net;
 using AutoMapper;
 using GauCorner.Business.Utilities.Authentication;
+using GauCorner.Business.Utilities.Converter;
 using GauCorner.Data.DTO.RequestModel;
 using GauCorner.Data.DTO.ResponseModel;
 using GauCorner.Data.DTO.ResponseModel.ResultModel;
@@ -66,7 +67,14 @@ namespace GauCorner.Business.Services.StreamConfigServices
 
                 if (existingConfig != null)
                 {
-                    existingConfig.Value = dto.Value;
+                    if (dto.AlternativeName == StreamConfigTypeEnums.Text.ToString())
+                    {
+                        existingConfig.Value = TextConvert.ConvertToUnicodeEscape(dto.Value);
+                    }
+                    else
+                    {
+                        existingConfig.Value = dto.Value;
+                    }
 
                     await _streamConfigRepositories.Update(existingConfig);
                 }
