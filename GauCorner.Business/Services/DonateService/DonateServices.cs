@@ -256,7 +256,7 @@ namespace GauCorner.Business.Services.DonateServices
                 throw new CustomException("Cấu hình không tồn tại trong hệ thống!");
             }
             GetConfig.Name = request.Name;
-            GetConfig.Description = request.Description;
+            GetConfig.Description = TextConvert.ConvertToUnicodeEscape(request.Description);
             GetConfig.ColorTone = request.ColorTone;
             if (!string.IsNullOrEmpty(request.LogoImage))
             {
